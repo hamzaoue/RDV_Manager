@@ -1,0 +1,41 @@
+<resources>
+    <!-- Nom de l'application -->
+    <string name="app_name">RDV Manager</string>
+
+    <!--******************************************************-->
+    <!--               Page de mes rendez-vous                -->
+    <!--******************************************************-->
+    <string name="my_appointments">Mes rendez-vous</string>
+    <string name="upcoming">À venir</string>
+    <string name="past">Passés</string>
+    <string name="no_upcoming_appointments">Aucun rendez-vous à venir</string>
+    <string name="add">Ajouter</string>
+
+    <!--******************************************************-->
+    <!--                 Barre de navigation                  -->
+    <!--******************************************************-->
+    <string name="appointments">Rendez-vous</string>
+    <string name="preferences">Préférences</string>
+
+    <!--******************************************************-->
+    <!--      Page de création/modification de rendez-vous    -->
+    <!--******************************************************-->
+    <string name="title">Titre</string>
+    <string name="date">Date</string>
+    <string name="time">Heure</string>
+    <string name="contact_name">Contact</string>
+    <string name="contact_phone">Numéro</string>
+    <string name="contact_address">Adresse</string>
+    <string name="save">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="arrow">arrow</string>
+
+    <!--******************************************************-->
+    <!--                 Boîtes de dialogue                   -->
+    <!--******************************************************-->
+    <string name="modify_title">Modifier le titre</string>
+    <string name="modify_phone">Modifier le téléphone</string>
+    <string name="modify_address">Modifier l\'adresse</string>
+    <string name="modify_contact">Modifier le contact</string>
+
+</resources>
