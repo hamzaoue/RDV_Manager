@@ -13,27 +13,21 @@
         app:itemIconTint="@drawable/bottom_nav_color"
         app:itemTextColor="@drawable/bottom_nav_color"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/my_appointments_menu">
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        app:menu="@menu/my_appointments_menu"/>
 
     <!--Fragment-->
-
     <FrameLayout
         android:id="@+id/sub_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grey_blue"/>
 
+    <!-- Bouton -->
     <Button
         android:id="@+id/add_appointment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/little_margin"
-        android:layout_marginBottom="@dimen/little_margin"
-        style="@style/ButtonStyle">
-    </Button>
+        style="@style/ButtonStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

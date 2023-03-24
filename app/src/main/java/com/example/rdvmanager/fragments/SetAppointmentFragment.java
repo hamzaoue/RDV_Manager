@@ -1,236 +1,241 @@
 package com.example.rdvmanager.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.core.app.ActivityCompat;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.rdvmanager.R;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /********************/
 public class SetAppointmentFragment extends Fragment
 {
     private final MyAppointmentsFragment aMAF;
+    private ActivityResultLauncher<Intent> aContactLauncher;
+    private ActivityResultLauncher<Intent> aMapLauncher;
+    private ActivityResultLauncher<String> aRequestPermissionLauncher;
+    private EditText aTitleEditText, aAddressEditText, aContactEditText, aPhoneEditText;
     /********************/
-    public  SetAppointmentFragment(MyAppointmentsFragment fragment)
-    {
-        this.aMAF = fragment;
-    }
+    public SetAppointmentFragment(MyAppointmentsFragment fragment) {this.aMAF = fragment;}
     /********************/
-    @Override public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle bundle)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle)
     {
+
+        aContactLauncher=registerForActivityResult(new StartActivityForResult(),this::onContactPicked);
+        aMapLauncher = registerForActivityResult(new StartActivityForResult(),this::onLocationPicked);
+        aRequestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),this::onRequestResult);
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
+        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
-        view.findViewById(R.id.title_button).setOnClickListener(this::openTitleDialog);
-        view.findViewById(R.id.date_button).setOnClickListener(this::openDatePicker);
-        view.findViewById(R.id.time_button).setOnClickListener(this::openTimePicker);
-        view.findViewById(R.id.address_button).setOnClickListener(this::openAddressDialog);
-        view.findViewById(R.id.contact_button).setOnClickListener(this::openContactDialog);
-        view.findViewById(R.id.phone_button).setOnClickListener(this::openPhoneDialog);
-
+        this.setDialogs(view);
         return view;
     }
     /********************/
-    private void saveAppointment(View view)
+    private void setDialogs(View view)
     {
-        //FragmentTransaction pour gérer les transactions de fragments
-        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
+        //Initialise les boîtes de dialogue
+        this.setTimePicker(view, R.id.time_button);
+        this.setDatePicker(view, R.id.date_button);
+        this.aTitleEditText = this.createDialog(view, R.id.title_button, R.string.modify_title,
+                R.drawable.ic_title, R.id.title, this::generateTitle, InputType.TYPE_CLASS_TEXT);
+        this.aAddressEditText = this.createDialog(view, R.id.address_button, R.string.modify_address,
+                R.drawable.ic_address,R.id.address, this::pickLocation, InputType.TYPE_CLASS_TEXT);
+        this.aContactEditText = this.createDialog(view, R.id.contact_button, R.string.modify_contact,
+                R.drawable.ic_contact, R.id.contact, this::pickContact, InputType.TYPE_CLASS_TEXT);
+        this.aPhoneEditText = this.createDialog(view, R.id.phone_button, R.string.modify_phone,
+                R.drawable.ic_phone, R.id.phone, this::pickContact, InputType.TYPE_CLASS_PHONE);
+    }
+    /********************/
+    private void generateTitle(View view)
+    {
+        this.aTitleEditText.setText(R.string.appointment);
+    }
+    /********************/
+    private void pickContact(View view)
+    {
+        String permission =Manifest.permission.READ_CONTACTS ;
+        int hasPermission = ContextCompat.checkSelfPermission(this.requireContext(), permission);
+        if(hasPermission != PackageManager.PERMISSION_GRANTED)
+            aRequestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+        else
+        {
+            Intent toContact = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+            aContactLauncher.launch(toContact);
+        }
+    }
+    /********************/
+    private void pickLocation(View view)
+    {
+        // Création de l'Intent pour l'API Places Autocomplete
+        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS);
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields).build(this.requireContext());
 
-        // Remplacer le fragment actuel par le fragment aMAF
-        transaction.replace(R.id.fragment_container, this.aMAF);
+        // Démarrage de l'activité d'Autocomplete avec l'Intent créé
+        aMapLauncher.launch(intent);
+    }
+    /********************/
+    private EditText createDialog(View view, int button_id, int title_id, int icon_id,
+                                      int textView_id, View.OnClickListener listener, int inputType)
+    {
+        // Créer la boîte de dialogue
+        Context context = this.requireContext();
+        CustomDialog dialog = new CustomDialog(context, title_id, icon_id);
 
-        // Appliquer les modifications de la transaction
-        transaction.commit();
+        //Configure l'action du bouton ok pour remplir le textView
+        TextView textView = view.findViewById(textView_id);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE,context.getString(R.string.save),
+                (dialog1,which)->textView.setText(dialog.getEditText().getText()));
 
-        // Détruire la vue du fragment actuel pour libérer les ressources
-        this.onDestroyView();
+        //Bouton qui ouvre le CustomDialog
+        view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
+
+        //Configure l'action de l'ImageButton avec une action définie en paramètre
+        dialog.getImageButton().setOnClickListener(listener);
+
+        //Configure le type de clavier de l'editText (chiffre ou lettre)
+        dialog.getEditText().setInputType(inputType);
+        return dialog.getEditText();
+    }
+    /********************/
+    private void setTimePicker(View view, int button_id)
+    {
+        //Configure l'action du bouton ok pour remplir le textView avec l'heure au bon format
+        TextView timeView = view.findViewById(R.id.time);
+        TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) ->
+                timeView.setText(String.format(Locale.FRANCE,"%02d:%02d", hours, minutes));
+
+        // Créer la boîte de dialogue
+        TimePickerDialog dialog = new TimePickerDialog(this.requireContext(),
+                R.style.MyDialogTheme, listener, 12 , 0, true);
+
+        //Bouton qui ouvre le timePicker
+        view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
+    }
+    /********************/
+    private void setDatePicker(View view, int button_id)
+    {
+        // Créer la boîte de dialogue
+        DatePickerDialog dialog = new DatePickerDialog(this.requireContext(),R.style.MyDialogTheme);
+
+        //Bouton qui ouvre le datePicker
+        view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
+
+        //Configure le bouton ok pour remplir le textView avec la date au bon format
+        Calendar calendar = Calendar.getInstance();
+        DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+        dialog.setOnDateSetListener((view1, year, month, day) -> {calendar.set(year,month,day);
+            ((TextView)view.findViewById(R.id.date)).setText(format.format(calendar.getTime()));});
     }
     /********************/
     private void backToMyAppointment(View view)
     {
-        //FragmentTransaction pour gérer les transactions de fragments
         FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
-
-        // Remplacer le fragment actuel par le fragment aMAF
         transaction.replace(R.id.fragment_container, this.aMAF);
-
-        // Appliquer les modifications de la transaction
         transaction.commit();
-
-        // Détruire la vue du fragment actuel pour libérer les ressources
         this.onDestroyView();
     }
     /********************/
-    private void openDatePicker(View view)
+    private void saveAppointment(View view)
     {
-        // Récupère la vue contenant le texte à modifier
-        TextView dateView = view.findViewById(R.id.date);
 
-        // Créer un listener pour écouter les événements de sélection de date
-        DatePickerDialog.OnDateSetListener listener = (view1, year, month, day) ->
-                dateView.setText(String.format(Locale.getDefault(),
-                        "%d/%02d/%d", day, month + 1, year));
-
-        // Créer une boîte de dialogue de sélection de date
-        DatePickerDialog datePickerDialog;
-        datePickerDialog = new DatePickerDialog(this.requireContext(), R.style.MyDialogTheme);
-        datePickerDialog.setOnDateSetListener(listener);
-        datePickerDialog.show();
     }
     /********************/
-    private void openTimePicker(View view)
+    private void onRequestResult(boolean isGranted)
     {
-        // Obtient l'heure par défaut à partir du TextView
-        TextView timeView = view.findViewById(R.id.time);
-        int dHours = 12 , dMins = 30;
-        String[] timeString = timeView.getText().toString().split(":");
-        try{dHours = Integer.parseInt(timeString[0]); dMins = Integer.parseInt(timeString[1]);}
-        catch(Exception ignore){}
-
-        // Créer un listener pour écouter les événements de sélection d'heure
-        TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) ->
-                timeView.setText(new StringBuilder().append(hours).append(":").append(minutes));
-
-        // Créer une boîte de dialogue de sélection d'heure
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this.requireContext(),
-                R.style.MyDialogTheme, listener,  dHours , dMins, true);
-        timePickerDialog.show();
+        this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI));
+        if (!isGranted)
+            this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
+                    ContactsContract.Contacts.CONTENT_URI));
     }
     /********************/
-    private void openTitleDialog(View view)
+    private void onLocationPicked(ActivityResult result)
     {
-        //Variables
-        AlertDialog.Builder builder = this.createBuilder(R.string.modify_title);
-        View content = this.getLayoutInflater().inflate(R.layout.alert_dialog_content,null);
-        ImageButton imageButton = content.findViewById(R.id.set_section_button);
-        EditText editText = content.findViewById(R.id.set_section_edit_text);
-        TextView textView = view.findViewById(R.id.title);
+        // Vérifie si le résultat est ok et si les données sont présentes
+        if (result.getData() == null || result.getResultCode() != Activity.RESULT_OK){return;}
 
-        //Modifications
-        editText.setText(textView.getText());
-        imageButton.setImageResource(R.drawable.ic_title);
-        imageButton.setOnClickListener(view1-> editText.setText(R.string.title));
-        builder.setPositiveButton(R.string.save, (dialog,whichButton)->
-                textView.setText(editText.getText()));
-        //Affichage du dialog
-        builder.setView(content);
-        builder.create().show();
+        Intent intent = result.getData();
+        Place place = Autocomplete.getPlaceFromIntent(intent);
+        this.aAddressEditText.setText(place.getAddress());
     }
     /********************/
-    private void openAddressDialog(View view)
+    private void onContactPicked(ActivityResult result)
     {
-        //Variables
-        AlertDialog.Builder builder = this.createBuilder(R.string.modify_address);
-        View content = this.getLayoutInflater().inflate(R.layout.alert_dialog_content,null);
-        ImageButton imageButton = content.findViewById(R.id.set_section_button);
-        EditText editText = content.findViewById(R.id.set_section_edit_text);
-        TextView textView = view.findViewById(R.id.address);
+        // Vérifie si le résultat est ok et si les données sont présentes
+        if (result.getData() == null || result.getResultCode() != Activity.RESULT_OK){return;}
 
-        //Modifications
-        editText.setText(textView.getText());
-        imageButton.setImageResource(R.drawable.ic_address);
-        imageButton.setOnClickListener(view1 ->
-                this.openGoogleMap(editText.getText().toString()));
-        builder.setPositiveButton(R.string.save, (dialog,whichButton)->
-                textView.setText(editText.getText()));
-        //Affichage du dialog
-        builder.setView(content);
-        builder.create().show();
-    }
-    /********************/
-    private void openContactDialog(View view)
-    {
-        //Variables
-        AlertDialog.Builder builder = this.createBuilder(R.string.modify_contact);
-        View content = this.getLayoutInflater().inflate(R.layout.alert_dialog_content,null);
-        ImageButton imageButton = content.findViewById(R.id.set_section_button);
-        EditText editText = content.findViewById(R.id.set_section_edit_text);
-        TextView textView = view.findViewById(R.id.contact);
+        // Récupérer les informations du contact sélectionné
+        ContentResolver resolver = this.requireContext().getContentResolver();
+        Cursor cursor = resolver.query(result.getData().getData(), null , null, null, null);
+        if (cursor == null || !cursor.moveToFirst()){return;}
 
-        //Modifications
-        editText.setText(textView.getText());
-        imageButton.setImageResource(R.drawable.ic_contact);
-        imageButton.setOnClickListener(view1 ->
-                this.requestPermission());
-        builder.setPositiveButton(R.string.save, (dialog,whichButton)->
-                textView.setText(editText.getText()));
-        //Affichage du dialog
-        builder.setView(content);
-        builder.create().show();
+        // Afficher le nom et le numéro dans les boîtes de dialogue correspondante
+        this.aContactEditText.setText(this.getContactName(cursor));
+        this.aPhoneEditText.setText(this.getContactPhone(cursor));
+        cursor.close();
     }
     /********************/
-    private void openPhoneDialog(View view)
+    private String getContactName(Cursor cursor)
     {
-        //Variables
-        AlertDialog.Builder builder = this.createBuilder(R.string.modify_phone);
-        View content = this.getLayoutInflater().inflate(R.layout.alert_dialog_content,null);
-        ImageButton imageButton = content.findViewById(R.id.set_section_button);
-        EditText editText = content.findViewById(R.id.set_section_edit_text);
-        TextView textView = view.findViewById(R.id.phone);
+        // Récupère l'index de la colonne contenant le nom
+        int nameColumnIndex = cursor.getColumnIndex(Phone.DISPLAY_NAME);
+        if(nameColumnIndex == -1){return null;}
+        return cursor.getString(nameColumnIndex);
+    }
+    /********************/
+    private String getContactPhone(Cursor cursor)
+    {
+        // Récupère l'index de la colonne contenant l'ID du contact
+        int idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+        if(idColumnIndex == -1) {return null;}
 
-        //Modifications
-        editText.setText(textView.getText());
-        editText.setInputType(InputType.TYPE_CLASS_PHONE);
-        imageButton.setImageResource(R.drawable.ic_phone);
-        imageButton.setOnClickListener(view1 ->
-                this.requestPermission());
-        builder.setPositiveButton(R.string.save, (dialog,whichButton)->
-                textView.setText(editText.getText()));
-        //Affichage du dialog
-        builder.setView(content);
-        builder.create().show();
-    }
-    /********************/
-    private AlertDialog.Builder createBuilder(int title_Id)
-    {
-        AlertDialog.Builder builder ;
-        builder = new AlertDialog.Builder(this.requireContext(),R.style.MyDialogTheme);
-        builder.setPositiveButton(R.string.save, null);
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.setTitle(title_Id);
-        return builder;
-    }
-    /********************/
-    private void openGoogleMap(String address)
-    {
-        Uri mapUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        startActivity(mapIntent);
-    }
-    /********************/
-    private void requestPermission()
-    {
-        if (ContextCompat.checkSelfPermission(this.requireContext(),
-                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this.requireActivity(),
-                    new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        }
-        int CONTACT_PICKER_RESULT = 0;
-            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
-        
-    }
+        // Crée une clause de sélection pour récupérer les numéros de téléphone liés à l'ID
+        String selection = Phone.CONTACT_ID + " = " + cursor.getString(idColumnIndex);
+        ContentResolver resolver = this.requireContext().getContentResolver();
+        Cursor phoneCursor = resolver.query(Phone.CONTENT_URI,null,selection,null,null,null);
+        if (phoneCursor == null || !phoneCursor.moveToFirst()) {return null;}
 
+        // Récupère l'index de la colonne contenant le numéro de téléphone
+        int phoneColumnIndex = phoneCursor.getColumnIndex(Phone.NUMBER);
+        String number = phoneCursor.getString(phoneColumnIndex);
+        phoneCursor.close();
+        return number;
+    }
 }

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -21,267 +22,154 @@
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginHorizontal="@dimen/default_margin"
                 android:padding="@dimen/default_margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="UselessParent">
 
+                <!-- titre -->
                 <RelativeLayout
                     android:id="@+id/title_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    style="@style/RelativeLayoutTheme">
 
                     <TextView
                         android:id="@+id/title_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:text="@string/title"
-                        style="@style/SectionTitleStyle"
                         app:drawableLeftCompat="@drawable/ic_title"
-                        android:drawablePadding="@dimen/default_margin"
-                        app:drawableTint="@color/yellow">
-                    </TextView>
+                        style="@style/SectionTitleStyle"/>
 
                     <TextView
                         android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/SectionFilledStyle"
                         android:layout_below="@id/title_label"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginTop="@dimen/little_margin">
-                    </TextView>
+                        style="@style/SectionFilledStyle"/>
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_right"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        app:tint="@color/white"
-                        android:contentDescription="@string/arrow">
-                    </ImageView>
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
+
                 </RelativeLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="@dimen/default_margin"
-                    android:background="@color/white">
-                </View>
+                <View style="@style/BarTheme"/>
 
+                <!-- date -->
                 <RelativeLayout
                     android:id="@+id/date_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    style="@style/RelativeLayoutTheme">
 
                     <TextView
                         android:id="@+id/date_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:text="@string/date"
-                        app:drawableLeftCompat="@drawable/ic_calendar"
-                        android:drawablePadding="@dimen/default_margin"
-                        app:drawableTint="@color/yellow"
-                        style="@style/SectionTitleStyle" >
-                    </TextView>
+                        app:drawableLeftCompat="@drawable/ic_date"
+                        style="@style/SectionTitleStyle"/>
 
                     <TextView
                         android:id="@+id/date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:layout_below="@id/date_label"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginTop="@dimen/little_margin"
-                        style="@style/SectionFilledStyle" >
-                    </TextView>
+                        style="@style/SectionFilledStyle"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
+                    <ImageView
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
 
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/default_margin"
-            android:background="@color/white" />
-
-        <RelativeLayout
-            android:id="@+id/time_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
-
-            <TextView
-                android:id="@+id/time_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/time"
-                style="@style/SectionTitleStyle"
-                app:drawableLeftCompat="@drawable/ic_time"
-                android:drawablePadding="@dimen/default_margin"
-                app:drawableTint="@color/yellow"/>
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/SectionFilledStyle"
-                android:layout_below="@id/time_label"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/little_margin"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
-
-        </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/default_margin"
-            android:background="@color/white" />
-
-        <RelativeLayout
-            android:id="@+id/address_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
-
-            <TextView
-                android:id="@+id/address_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contact_address"
-                style="@style/SectionTitleStyle"
-                app:drawableLeftCompat="@drawable/ic_address"
-                android:drawablePadding="@dimen/default_margin"
-                app:drawableTint="@color/yellow"/>
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/SectionFilledStyle"
-                android:layout_below="@id/address_label"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/little_margin"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
-
-        </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/default_margin"
-            android:background="@color/white" />
-
-        <RelativeLayout
-            android:id="@+id/contact_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
-
-            <TextView
-                android:id="@+id/contact_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contact_name"
-                style="@style/SectionTitleStyle"
-                app:drawableLeftCompat="@drawable/ic_contact"
-                android:drawablePadding="@dimen/default_margin"
-                app:drawableTint="@color/yellow"/>
-
-            <TextView
-                android:id="@+id/contact"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/SectionFilledStyle"
-                android:layout_below="@id/contact_label"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/little_margin"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/default_margin"
-            android:background="@color/white"/>
-
-        <RelativeLayout
-            android:id="@+id/phone_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
-
-            <TextView
-                android:id="@+id/phone_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contact_phone"
-                style="@style/SectionTitleStyle"
-                app:drawableLeftCompat="@drawable/ic_phone"
-                android:drawablePadding="@dimen/default_margin"
-                app:drawableTint="@color/yellow"/>
-
-                 <TextView
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/SectionFilledStyle"
-                android:layout_below="@id/phone_label"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/little_margin"/>
-
-                    <ImageView android:contentDescription="@string/arrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_right"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:tint="@color/white">
-                    </ImageView>
                 </RelativeLayout>
+
+                <View style="@style/BarTheme"/>
+
+                <!-- heure -->
+                <RelativeLayout
+                    android:id="@+id/time_button"
+                    style="@style/RelativeLayoutTheme">
+
+                    <TextView
+                        android:id="@+id/time_label"
+                        android:text="@string/time"
+                        app:drawableLeftCompat="@drawable/ic_time"
+                        style="@style/SectionTitleStyle"/>
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_below="@id/time_label"
+                        style="@style/SectionFilledStyle"/>
+
+                    <ImageView
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
+
+                </RelativeLayout>
+
+                <View style="@style/BarTheme"/>
+
+                <!-- addresse -->
+                <RelativeLayout
+                    android:id="@+id/address_button"
+                    style="@style/RelativeLayoutTheme">
+
+                    <TextView
+                        android:id="@+id/address_label"
+                        android:text="@string/address"
+                        app:drawableLeftCompat="@drawable/ic_address"
+                        style="@style/SectionTitleStyle"/>
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_below="@id/address_label"
+                        style="@style/SectionFilledStyle"/>
+
+                    <ImageView
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
+
+                </RelativeLayout>
+
+                <View style="@style/BarTheme"/>
+
+                <!-- contact -->
+                <RelativeLayout
+                    android:id="@+id/contact_button"
+                    style="@style/RelativeLayoutTheme">
+
+                    <TextView
+                        android:id="@+id/contact_label"
+                        android:text="@string/contact"
+                        app:drawableLeftCompat="@drawable/ic_contact"
+                        style="@style/SectionTitleStyle"/>
+
+                    <TextView
+                        android:id="@+id/contact"
+                        android:layout_below="@id/contact_label"
+                        style="@style/SectionFilledStyle"/>
+
+                    <ImageView
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
+
+                </RelativeLayout>
+
+                <View style="@style/BarTheme"/>
+
+                <!-- téléphone -->
+                <RelativeLayout
+                    android:id="@+id/phone_button"
+                    style="@style/RelativeLayoutTheme">
+
+                    <TextView
+                        android:id="@+id/phone_label"
+                        android:text="@string/phone"
+                        app:drawableLeftCompat="@drawable/ic_phone"
+                        style="@style/SectionTitleStyle"/>
+
+                    <TextView
+                        android:id="@+id/phone"
+                        android:layout_below="@id/phone_label"
+                        style="@style/SectionFilledStyle"/>
+
+                    <ImageView
+                        style="@style/ArrowTheme"
+                        android:contentDescription="@string/icon"/>
+
+                </RelativeLayout>
+
             </LinearLayout>
+
         </LinearLayout>
+
     </ScrollView>
 
     <LinearLayout
@@ -291,32 +179,17 @@
         android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="@dimen/little_margin">
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/cancel"
-            android:backgroundTint="@color/yellow"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/little_margin"
-            style="@style/ButtonStyle">
-        </Button>
+            style="@style/ButtonStyle"/>
 
         <Button
             android:id="@+id/save_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/save"
-            android:backgroundTint="@color/yellow"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/little_margin"
-            style="@style/ButtonStyle">
-        </Button>
+            style="@style/ButtonStyle"/>
 
     </LinearLayout>
 

@@ -3,7 +3,7 @@
     <item
         android:id="@+id/Appointments"
         android:title="@string/appointments"
-        android:icon="@drawable/ic_calendar"/>
+        android:icon="@drawable/ic_date"/>
 
     <item
         android:id="@+id/Preferences"

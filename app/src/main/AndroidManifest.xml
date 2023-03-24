@@ -11,7 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RDVManager"
         tools:targetApi="31">
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
