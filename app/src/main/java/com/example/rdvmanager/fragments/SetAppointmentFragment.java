@@ -62,7 +62,7 @@ public class SetAppointmentFragment extends Fragment
         aRequestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),this::onRequestResult);
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
-        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
+        Places.initialize(view.getContext(), "");
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
         this.setDialogs(view);
