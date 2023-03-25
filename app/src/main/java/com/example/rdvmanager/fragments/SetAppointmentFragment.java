@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.rdvmanager.CustomDialog;
 import com.example.rdvmanager.R;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -60,7 +61,7 @@ public class SetAppointmentFragment extends Fragment
         aRequestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),this::onRequestResult);
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
-        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
+        Places.initialize(view.getContext(), "");
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
         this.setDialogs(view);

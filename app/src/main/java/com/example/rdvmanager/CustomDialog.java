@@ -1,4 +1,4 @@
-package com.example.rdvmanager.fragments;
+package com.example.rdvmanager;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import androidx.core.content.ContextCompat;
@@ -15,7 +15,7 @@ public class CustomDialog extends AlertDialog
     private final ImageButton aImageButton;
     private final EditText aEditText;
     /********************/
-    protected CustomDialog(Context context, int title_id, int icon_id)
+    public CustomDialog(Context context, int title_id, int icon_id)
     {
         super(context,R.style.MyDialogTheme);
         this.setTitle(title_id);
