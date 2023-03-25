@@ -4,7 +4,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import androidx.core.content.ContextCompat;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
-import com.example.rdvmanager.R;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -31,7 +30,7 @@ public class CustomDialog extends AlertDialog
     private ImageButton createImageButton(Context context, int icon_id)
     {
         ImageButton imageButton = new ImageButton(context);
-        imageButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_bg));
+        imageButton.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_corners_yellow));
         imageButton.setImageResource(icon_id);
         return imageButton;
     }
@@ -39,7 +38,7 @@ public class CustomDialog extends AlertDialog
     private EditText createEditText(Context context)
     {
         EditText editText = new EditText(context);
-        editText.setBackground(ContextCompat.getDrawable(context, R.drawable.edit_text_border));
+        editText.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_empty_border));
         editText.setTextColor(ContextCompat.getColor(context, R.color.white));
         editText.setPadding(10, 0,10, 0);
         return editText;

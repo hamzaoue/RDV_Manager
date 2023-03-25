@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/little_margin"
+    android:paddingTop="@dimen/little_margin">
 
-    <ImageView
+    <!-- Rectangle jaune avec titre centré -->
+    <TextView
+        android:id="@+id/appointment_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:text="@string/title"
+        style="@style/AppointmentTitle"/>
+
+    <!-- Rectangle noir-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_bottom_corners"
+        android:padding="@dimen/little_margin">
+
+        <!-- Icone more vert  -->
+        <ImageView
+            android:contentDescription="@string/icon"
+            android:id="@+id/menu"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_more_vert"
+            style="@style/IconTheme" />
+
+        <!-- Icone Date  -->
+        <ImageView
+            android:contentDescription="@string/icon"
+            android:id="@+id/date_ic"
+            android:layout_toStartOf="@id/appointment_date"
+            android:src="@drawable/ic_date"
+            style="@style/IconTheme"/>
+
+        <!-- Texte date -->
+        <TextView
+            android:id="@+id/appointment_date"
+            android:layout_toStartOf="@+id/time_ic"
+            android:text="@string/date"
+            style="@style/AppointmentContent"/>
+
+        <!-- Icone Time  -->
+        <ImageView
+            android:contentDescription="@string/icon"
+            android:id="@+id/time_ic"
+            android:layout_toStartOf="@id/appointment_time"
+            android:src="@drawable/ic_time"
+            style="@style/IconTheme"/>
+
+        <!-- Texte heure -->
+        <TextView
+            android:id="@+id/appointment_time"
+            android:layout_toStartOf="@id/arrow"
+            android:text="@string/time"
+            style="@style/AppointmentContent"/>
+
+        <!-- Icone arrow  -->
+        <ImageView
+            android:id="@+id/arrow"
+            android:contentDescription="@string/icon"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_arrow_right"
+            style="@style/IconTheme"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

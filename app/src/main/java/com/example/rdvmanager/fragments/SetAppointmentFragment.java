@@ -36,6 +36,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.text.DateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SetAppointmentFragment extends Fragment
         aRequestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),this::onRequestResult);
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
-        Places.initialize(view.getContext(), "");
+        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
         this.setDialogs(view);
@@ -139,6 +140,7 @@ public class SetAppointmentFragment extends Fragment
     {
         //Configure l'action du bouton ok pour remplir le textView avec l'heure au bon format
         TextView timeView = view.findViewById(R.id.time);
+
         TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) ->
                 timeView.setText(String.format(Locale.FRANCE,"%02d:%02d", hours, minutes));
 
@@ -160,7 +162,7 @@ public class SetAppointmentFragment extends Fragment
 
         //Configure le bouton ok pour remplir le textView avec la date au bon format
         Calendar calendar = Calendar.getInstance();
-        DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+        DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.FRANCE);
         dialog.setOnDateSetListener((view1, year, month, day) -> {calendar.set(year,month,day);
             ((TextView)view.findViewById(R.id.date)).setText(format.format(calendar.getTime()));});
     }
