@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "310473054417",
+    "project_id": "rdv-manager-fee6e",
+    "storage_bucket": "rdv-manager-fee6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310473054417:android:88efd46dfbd92057dc8df0",
+        "android_client_info": {
+          "package_name": "com.example.rdvmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "310473054417-i2em9k7qpkupfg1fjmscct3am11bt7rq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6YQf-OX-6tE_H6X3imE44s7GZjZZoI60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "310473054417-i2em9k7qpkupfg1fjmscct3am11bt7rq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
