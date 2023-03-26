@@ -17,9 +17,12 @@ import com.example.rdvmanager.DatabaseManager;
 import com.example.rdvmanager.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.List;
+
 /********************/
 public class MyAppointmentsFragment extends Fragment
 {
+    private int aSelectedItem = R.id.Upcoming;
     private AppointmentAdapter aAdapter;
     /********************/
     @Override public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)
@@ -32,11 +35,12 @@ public class MyAppointmentsFragment extends Fragment
 
         //Importation du bouton "Ajouter"
         Button addAppointmentButton = view.findViewById(R.id.add_appointment);
-        addAppointmentButton.setOnClickListener(this::addAppointment);
+        addAppointmentButton.setOnClickListener(view1->
+                this.loadFragment(new SetAppointmentFragment(this , new Appointment())));
 
         //Adapter
         DatabaseManager databaseManager = new DatabaseManager(view.getContext());
-        this.aAdapter = new AppointmentAdapter(this, databaseManager.getUpcomingAppointments());
+        this.aAdapter = new AppointmentAdapter(this,this.getAppointments());
         databaseManager.close();
 
         //RecyclerView
@@ -47,27 +51,28 @@ public class MyAppointmentsFragment extends Fragment
     /********************/
     public boolean appointmentsNavigation(MenuItem item)
     {
-        DatabaseManager db = new DatabaseManager(requireContext());
-        if(item.getItemId() == R.id.Upcoming)
-            this.aAdapter.setAppointments(db.getUpcomingAppointments());
-        else if( item.getItemId() == R.id.Past)
-            this.aAdapter.setAppointments(db.getPastAppointments());
-        db.close();
+        this.aSelectedItem = item.getItemId();
+        this.aAdapter.setAppointments(this.getAppointments());
         return true;
     }
     /********************/
-    private void addAppointment(View view)
+    private List<Appointment> getAppointments()
     {
-        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, new SetAppointmentFragment(this , new Appointment()));
-        transaction.addToBackStack(null);
-        transaction.commit();
+        List<Appointment> appointments = null;
+        DatabaseManager db = new DatabaseManager(requireContext());
+        if(this.aSelectedItem == R.id.Upcoming)
+            appointments=db.getUpcomingAppointments();
+        else if(this.aSelectedItem == R.id.Past)
+            appointments=db.getPastAppointments();
+        db.close();
+        return appointments;
     }
     /********************/
     public void loadFragment(Fragment fragment)
     {
         FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }
