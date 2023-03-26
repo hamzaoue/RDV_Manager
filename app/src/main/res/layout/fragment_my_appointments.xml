@@ -15,14 +15,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/my_appointments_menu"/>
 
-    <!--Fragment-->
-    <FrameLayout
-        android:id="@+id/sub_fragment_container"
-        android:layout_width="match_parent"
+    <LinearLayout
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_marginTop="@dimen/my_appointments_bar_size"
-        android:background="@color/grey_blue"
-        app:layout_constraintTop_toBottomOf="@+id/appointments_navigation_view" />
+        android:background="@color/grey_blue">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vertical_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 
     <!-- Bouton -->
     <Button

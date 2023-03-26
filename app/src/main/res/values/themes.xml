@@ -5,6 +5,15 @@
     <!--               Commun à plusieurs pages              -->
     <!--******************************************************-->
 
+    <!-- -->
+    <style name="MyTheme">
+        <item name="android:textColorSecondary">@color/yellow</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimaryInverse">@color/black</item>
+        <item name="android:textColorSecondaryInverse">@color/grey_blue</item>
+        <item name="colorAccent">@color/yellow</item>
+    </style>
+
     <!--Boutons-->
     <style name="ButtonStyle">
         <item name="android:textColor">@color/black</item>
@@ -14,6 +23,15 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginEnd">@dimen/little_margin</item>
         <item name="android:layout_marginBottom">@dimen/little_margin</item>
+    </style>
+
+    <!--Layout clickable -->
+    <style name="ClickableLayoutTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
     <!-- Titre de la page -->
@@ -73,15 +91,6 @@
     <!--      Page de création/modification de rendez-vous    -->
     <!--******************************************************-->
 
-    <!-- section clickable-->
-    <style name="RelativeLayoutTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-    </style>
-
     <!-- Titre de section (Titre,Date,Heure,Adresse etc) -->
     <style name="SectionTitleStyle">
         <item name="android:textColor">@color/yellow</item>
@@ -115,19 +124,11 @@
     <!--                   Boîtes de dialogues                -->
     <!--******************************************************-->
 
-    <!-- Commun à toute les boîtes de dialogue -->
-    <style name="MyTheme">
-        <item name="android:textColorSecondary">@color/yellow</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorPrimaryInverse">@color/black</item>
-        <item name="android:textColorSecondaryInverse">@color/grey_blue</item>
-        <item name="colorAccent">@color/yellow</item>
-    </style>
-
-    <!-- Jsais pu -->
+    <!--  Commun à toute les boîtes de dialogue -->
     <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:theme">@style/MyTheme</item>
         <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColorAlertDialogListItem">@color/white</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonTheme</item>
         <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonTheme</item>
         <item name="android:timePickerStyle">@style/TimePickerTheme</item> <!-- Pour TimePicker -->

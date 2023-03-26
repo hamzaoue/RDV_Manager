@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,45 +29,114 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.rdvmanager.Appointment;
 import com.example.rdvmanager.CustomDialog;
+import com.example.rdvmanager.DatabaseManager;
 import com.example.rdvmanager.R;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
-import java.text.DateFormat;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 /********************/
 public class SetAppointmentFragment extends Fragment
 {
     private final MyAppointmentsFragment aMAF;
-    private ActivityResultLauncher<Intent> aContactLauncher;
-    private ActivityResultLauncher<Intent> aMapLauncher;
+    private final Appointment aAppointment;
+    private ActivityResultLauncher<Intent> aContactLauncher , aLocationLauncher;
     private ActivityResultLauncher<String> aRequestPermissionLauncher;
     private EditText aTitleEditText, aAddressEditText, aContactEditText, aPhoneEditText;
-    /********************/
-    public SetAppointmentFragment(MyAppointmentsFragment fragment) {this.aMAF = fragment;}
-    /********************/
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle)
-    {
 
-        aContactLauncher=registerForActivityResult(new StartActivityForResult(),this::onContactPicked);
-        aMapLauncher = registerForActivityResult(new StartActivityForResult(),this::onLocationPicked);
-        aRequestPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),this::onRequestResult);
+    /********************/
+    public SetAppointmentFragment(MyAppointmentsFragment fragment, Appointment appointment)
+    {
+        this.aMAF = fragment;
+        this.aAppointment = appointment;
+    }
+    /********************/
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle)
+    {
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
-        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
+
+        //Définit l'action du bouton cancel et ok
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
+
+        // Launchers chargés respectivement: d'ouvrir les contacts, d'ouvrir l'API d'autocomplétion
+        // de lieux et de demander la permission d'acceder aux contacts
+        this.setLaunchers(view);
+
+        //Remplit les champs de texte avec les valeurs existante si modification d'un rendez-vous
+        this.fillTextViews(view);
+
+        //Créer les boîtes de dialogues qui servent à modifier les champs
         this.setDialogs(view);
         return view;
+    }
+    /********************/
+    private void setLaunchers(View view)
+    {
+        this.aContactLauncher= registerForActivityResult(
+                new StartActivityForResult(),this::onContactPicked);
+
+        Places.initialize(view.getContext(), "AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE");
+        this.aLocationLauncher = registerForActivityResult(
+                new StartActivityForResult(),this::onLocationPicked);
+
+        this.aRequestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),this::onRequestResult);
+    }
+    /********************/
+    private void backToMyAppointment(View view)
+    {
+        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, this.aMAF);
+        transaction.commit();
+        this.onDestroyView();
+    }
+    /********************/
+    private void saveAppointment(View view)
+    {
+        if(isEmpty(R.id.title) || isEmpty(R.id.date) ||isEmpty(R.id.time)){return;}
+        this.updateAppointment();
+        DatabaseManager databaseManager = new DatabaseManager(view.getContext());
+        databaseManager.addAppointment(this.aAppointment);
+        databaseManager.close();
+        this.backToMyAppointment(view);
+    }
+    /********************/
+    public boolean isEmpty(int textViewId)
+    {
+        TextView textView = requireView().findViewById(textViewId);
+        String text = textView.getText().toString().trim();
+        if(TextUtils.isEmpty(text))
+            textView.setError("");
+        else
+            textView.setError(null);
+        return TextUtils.isEmpty(text);
+    }
+    /********************/
+    private void updateAppointment()
+    {
+        aAppointment.setTitle(((TextView)requireView().findViewById(R.id.title)).getText().toString());
+        aAppointment.setAddress(((TextView)requireView().findViewById(R.id.address)).getText().toString());
+        aAppointment.setContact(((TextView)requireView().findViewById(R.id.contact)).getText().toString());
+        aAppointment.setPhone(((TextView)requireView().findViewById(R.id.phone)).getText().toString());
+    }
+    /********************/
+    private void fillTextViews(View view)
+    {
+        if(this.aAppointment.getId()==-1){return;}
+        ((TextView)view.findViewById(R.id.title)).setText(aAppointment.getTitle());
+        ((TextView)view.findViewById(R.id.address)).setText(aAppointment.getAddress());
+        ((TextView)view.findViewById(R.id.contact)).setText(aAppointment.getContact());
+        ((TextView)view.findViewById(R.id.date)).setText(aAppointment.getDate());
+        ((TextView)view.findViewById(R.id.time)).setText(aAppointment.getTime());
+        ((TextView)view.findViewById(R.id.phone)).setText(aAppointment.getPhone());
     }
     /********************/
     private void setDialogs(View view)
@@ -74,47 +144,18 @@ public class SetAppointmentFragment extends Fragment
         //Initialise les boîtes de dialogue
         this.setTimePicker(view, R.id.time_button);
         this.setDatePicker(view, R.id.date_button);
-        this.aTitleEditText = this.createDialog(view, R.id.title_button, R.string.modify_title,
+        this.aTitleEditText = this.setDialog(view, R.id.title_button, R.string.modify_title,
                 R.drawable.ic_title, R.id.title, this::generateTitle, InputType.TYPE_CLASS_TEXT);
-        this.aAddressEditText = this.createDialog(view, R.id.address_button, R.string.modify_address,
+        this.aAddressEditText = this.setDialog(view, R.id.address_button, R.string.modify_address,
                 R.drawable.ic_address,R.id.address, this::pickLocation, InputType.TYPE_CLASS_TEXT);
-        this.aContactEditText = this.createDialog(view, R.id.contact_button, R.string.modify_contact,
+        this.aContactEditText = this.setDialog(view, R.id.contact_button, R.string.modify_contact,
                 R.drawable.ic_contact, R.id.contact, this::pickContact, InputType.TYPE_CLASS_TEXT);
-        this.aPhoneEditText = this.createDialog(view, R.id.phone_button, R.string.modify_phone,
+        this.aPhoneEditText = this.setDialog(view, R.id.phone_button, R.string.modify_phone,
                 R.drawable.ic_phone, R.id.phone, this::pickContact, InputType.TYPE_CLASS_PHONE);
     }
     /********************/
-    private void generateTitle(View view)
-    {
-        this.aTitleEditText.setText(R.string.appointment);
-    }
-    /********************/
-    private void pickContact(View view)
-    {
-        String permission =Manifest.permission.READ_CONTACTS ;
-        int hasPermission = ContextCompat.checkSelfPermission(this.requireContext(), permission);
-        if(hasPermission != PackageManager.PERMISSION_GRANTED)
-            aRequestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
-        else
-        {
-            Intent toContact = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-            aContactLauncher.launch(toContact);
-        }
-    }
-    /********************/
-    private void pickLocation(View view)
-    {
-        // Création de l'Intent pour l'API Places Autocomplete
-        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS);
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields).build(this.requireContext());
-
-        // Démarrage de l'activité d'Autocomplete avec l'Intent créé
-        aMapLauncher.launch(intent);
-    }
-    /********************/
-    private EditText createDialog(View view, int button_id, int title_id, int icon_id,
-                                      int textView_id, View.OnClickListener listener, int inputType)
+    private EditText setDialog(View view, int button_id, int title_id, int icon_id, int textView_id,
+                               View.OnClickListener listener, int inputType)
     {
         // Créer la boîte de dialogue
         Context context = this.requireContext();
@@ -140,9 +181,12 @@ public class SetAppointmentFragment extends Fragment
     {
         //Configure l'action du bouton ok pour remplir le textView avec l'heure au bon format
         TextView timeView = view.findViewById(R.id.time);
-
         TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) ->
-                timeView.setText(String.format(Locale.FRANCE,"%02d:%02d", hours, minutes));
+        {
+            this.aAppointment.getCalendar().set(Calendar.HOUR_OF_DAY, hours);
+            this.aAppointment.getCalendar().set(Calendar.MINUTE, minutes);
+            timeView.setText(this.aAppointment.getTime());
+        };
 
         // Créer la boîte de dialogue
         TimePickerDialog dialog = new TimePickerDialog(this.requireContext(),
@@ -161,32 +205,26 @@ public class SetAppointmentFragment extends Fragment
         view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
 
         //Configure le bouton ok pour remplir le textView avec la date au bon format
-        Calendar calendar = Calendar.getInstance();
-        DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.FRANCE);
-        dialog.setOnDateSetListener((view1, year, month, day) -> {calendar.set(year,month,day);
-            ((TextView)view.findViewById(R.id.date)).setText(format.format(calendar.getTime()));});
+        TextView dateView = view.findViewById(R.id.date);
+        dialog.setOnDateSetListener((view1, year, month, day) ->
+        {
+            this.aAppointment.getCalendar().set(year,month,day);
+            dateView.setText(this.aAppointment.getDate());
+        });
     }
     /********************/
-    private void backToMyAppointment(View view)
+    private void generateTitle(View view)
     {
-        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, this.aMAF);
-        transaction.commit();
-        this.onDestroyView();
+        this.aTitleEditText.setText(R.string.appointment);
     }
     /********************/
-    private void saveAppointment(View view)
+    private void pickLocation(View view)
     {
-
-    }
-    /********************/
-    private void onRequestResult(boolean isGranted)
-    {
-        this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_URI));
-        if (!isGranted)
-            this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
-                    ContactsContract.Contacts.CONTENT_URI));
+        // Création de l'Intent pour l'API Places Autocomplete
+        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS);
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields).build(this.requireContext());
+        aLocationLauncher.launch(intent);
     }
     /********************/
     private void onLocationPicked(ActivityResult result)
@@ -197,6 +235,19 @@ public class SetAppointmentFragment extends Fragment
         Intent intent = result.getData();
         Place place = Autocomplete.getPlaceFromIntent(intent);
         this.aAddressEditText.setText(place.getAddress());
+    }
+    /********************/
+    private void pickContact(View view)
+    {
+        String permission =Manifest.permission.READ_CONTACTS ;
+        int hasPermission = ContextCompat.checkSelfPermission(this.requireContext(), permission);
+        if(hasPermission != PackageManager.PERMISSION_GRANTED)
+            aRequestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+        else
+        {
+            Intent toContact = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+            aContactLauncher.launch(toContact);
+        }
     }
     /********************/
     private void onContactPicked(ActivityResult result)
@@ -240,5 +291,14 @@ public class SetAppointmentFragment extends Fragment
         String number = phoneCursor.getString(phoneColumnIndex);
         phoneCursor.close();
         return number;
+    }
+    /********************/
+    private void onRequestResult(boolean isGranted)
+    {
+        this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI));
+        if (!isGranted)
+            this.aContactLauncher.launch(new Intent(Intent.ACTION_PICK,
+                    ContactsContract.Contacts.CONTENT_URI));
     }
 }

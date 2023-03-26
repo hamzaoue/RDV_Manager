@@ -27,7 +27,7 @@
                 <!-- titre -->
                 <RelativeLayout
                     android:id="@+id/title_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/title_label"
@@ -51,7 +51,7 @@
                 <!-- date -->
                 <RelativeLayout
                     android:id="@+id/date_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/date_label"
@@ -75,7 +75,7 @@
                 <!-- heure -->
                 <RelativeLayout
                     android:id="@+id/time_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/time_label"
@@ -99,7 +99,7 @@
                 <!-- addresse -->
                 <RelativeLayout
                     android:id="@+id/address_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/address_label"
@@ -123,7 +123,7 @@
                 <!-- contact -->
                 <RelativeLayout
                     android:id="@+id/contact_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/contact_label"
@@ -147,7 +147,7 @@
                 <!-- téléphone -->
                 <RelativeLayout
                     android:id="@+id/phone_button"
-                    style="@style/RelativeLayoutTheme">
+                    style="@style/ClickableLayoutTheme">
 
                     <TextView
                         android:id="@+id/phone_label"

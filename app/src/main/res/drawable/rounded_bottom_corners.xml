@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Premier arrière-plan avec coins arrondis -->
+    <item>
+        <shape android:shape="rectangle">
 
-    <corners android:bottomLeftRadius="10dp"
-        android:bottomRightRadius="10dp"/>
+         <corners android:bottomLeftRadius="10dp"
+             android:bottomRightRadius="10dp"/>
 
-    <solid android:color="@color/black"/>
+         <solid android:color="@color/black"/>
 
-</shape>
+        </shape>
+    </item>
+    <!-- Deuxième arrière-plan avec effet de sélection -->
+    <item android:drawable="?attr/selectableItemBackground"/>
+</layer-list>
