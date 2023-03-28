@@ -1,5 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/BackgroundTheme"
+            android:paddingEnd="0dp"
+            tools:ignore="RtlSymmetry">
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/language"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+            <View style="@style/VerticalBarTheme" />
+
+            <Spinner
+                android:id="@+id/language_spinner"
+                android:layout_width="68dp"
+                android:layout_height="48dp"
+                android:paddingVertical="@dimen/little_margin"
+                android:entries="@array/languages"
+                android:gravity="end"
+                android:paddingEnd="25dp"
+                android:spinnerMode="dialog"
+                android:theme="@style/MyTheme"
+                tools:ignore="RtlSymmetry" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/BackgroundTheme">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/background_music"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+
+            <View style="@style/VerticalBarTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/background_music"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:theme="@style/MyTheme"
+                tools:ignore="DuplicateSpeakableTextCheck" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/BackgroundTheme">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_mode"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+
+            <View style="@style/VerticalBarTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/dark_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:theme="@style/MyTheme" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/BackgroundTheme">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/notification"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+
+            <View style="@style/VerticalBarTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:theme="@style/MyTheme" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

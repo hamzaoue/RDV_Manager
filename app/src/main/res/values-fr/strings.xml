@@ -6,60 +6,60 @@
     <!--******************************************************-->
     <!--               Page de mes rendez-vous                -->
     <!--******************************************************-->
-    <string name="my_appointments">My Appointments</string>
-    <string name="upcoming">Upcoming</string>
-    <string name="past">Past</string>
-    <string name="no_appointments">No Appointments</string>
-    <string name="add">Add</string>
+    <string name="my_appointments">Mes rendez-vous</string>
+    <string name="upcoming">À venir</string>
+    <string name="past">Passés</string>
+    <string name="no_appointments">Aucun rendez-vous</string>
+    <string name="add">Ajouter</string>
 
     <!--******************************************************-->
     <!--      Boîtes de dialogue dans page mes rendez-vous    -->
     <!--******************************************************-->
-    <string name="share">Share</string>
-    <string name="call">Call the number</string>
-    <string name="open_in_map">Open in maps</string>
-    <string name="remove">Remove</string>
+    <string name="share">Partager</string>
+    <string name="call">Appeler le numéro</string>
+    <string name="open_in_map">Ouvrir dans Maps</string>
+    <string name="remove">Supprimer</string>
     <string name="confirmation">Confirmation</string>
-    <string name="confirmation_message">Are you sure you want to delete this item?</string>
-    <string name="invalid_number">The phone number is not valid</string>
-    <string name="invalid_address">The address is invalid</string>
+    <string name="confirmation_message">Êtes-vous sûr de vouloir supprimer cet élément ?</string>
+    <string name="invalid_number">Le numéro de téléphone n\'est pas valide</string>
+    <string name="invalid_address">L\'adresse n\'est pas valide</string>
 
     <!--******************************************************-->
     <!--                 Barre de navigation                  -->
     <!--******************************************************-->
-    <string name="appointments">Appointments</string>
-    <string name="preferences">Preferences</string>
+    <string name="appointments">Rendez-vous</string>
+    <string name="preferences">Préférences</string>
 
     <!--******************************************************-->
     <!--      Page de création/modification de rendez-vous    -->
     <!--******************************************************-->
-    <string name="title">Title</string>
+    <string name="title">Titre</string>
     <string name="date">Date</string>
-    <string name="time">Time</string>
+    <string name="time">Heure</string>
     <string name="contact">Contact</string>
-    <string name="phone">Phone</string>
-    <string name="address">Address</string>
+    <string name="phone">Numéro</string>
+    <string name="address">Adresse</string>
     <string name="save">OK</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Annuler</string>
     <string name="icon">ic</string>
-    <string name="empty_field">Empty field</string>
+    <string name="empty_field">Champs vide</string>
 
     <!--******************************************************-->
     <!-- Boîtes de dialogue dans page de création/modification-->
     <!--******************************************************-->
-    <string name="modify_title">Modify title</string>
-    <string name="modify_phone">Modify phone</string>
-    <string name="modify_address">Modify Address</string>
-    <string name="modify_contact">Modify Contact</string>
-    <string name="appointment">Appointment</string>
+    <string name="modify_title">Modifier le titre</string>
+    <string name="modify_phone">Modifier le téléphone</string>
+    <string name="modify_address">Modifier l\'adresse</string>
+    <string name="modify_contact">Modifier le contact</string>
+    <string name="appointment">Rendez-vous</string>
 
     <!--******************************************************-->
     <!--                        Préférences                   -->
     <!--******************************************************-->
-    <string name="dark_mode">Dark Mode</string>
-    <string name="background_music">Background music</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="background_music">Musique de fond</string>
     <string name="notification">Notifications</string>
-    <string name="language">Language</string>
+    <string name="language">Langue</string>
     <string-array name="languages">
         <item>FR</item>
         <item>EN</item>

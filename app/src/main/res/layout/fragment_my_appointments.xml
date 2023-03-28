@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/my_appointments_menu"/>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
@@ -28,10 +28,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
         </androidx.recyclerview.widget.RecyclerView>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/empty_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_appointments"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:paddingBottom="@dimen/big_margin"
+            android:textSize="18dp"/>
+
+    </FrameLayout>
 
     <!-- Bouton -->
     <Button

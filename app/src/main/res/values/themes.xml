@@ -1,6 +1,9 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.RDVManager" parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
+    <style name="Theme.RDVManager" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+    </style>
     <!--******************************************************-->
     <!--               Commun à plusieurs pages              -->
     <!--******************************************************-->
@@ -31,7 +34,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/round_corners_ripple</item>
     </style>
 
     <!-- Titre de la page -->
@@ -55,18 +58,40 @@
     </style>
 
     <!--******************************************************-->
+    <!--                      Préférences                     -->
+    <!--******************************************************-->
+
+    <!-- -->
+    <style name="VerticalBarTheme">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/little_margin</item>
+        <item name="android:layout_marginBottom">@dimen/little_margin</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <!-- -->
+    <style name="BackgroundTheme" parent="@style/ClickableLayoutTheme">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">end</item>
+        <item name="android:layout_margin">@dimen/little_margin</item>
+        <item name="android:paddingRight">@dimen/default_margin</item>
+        <item name="android:paddingLeft">@dimen/default_margin</item>
+        <item name="android:paddingTop">@dimen/little_margin</item>
+        <item name="android:paddingBottom">@dimen/little_margin</item>
+    </style>
+
+    <!--******************************************************-->
     <!--                 Page mes rendez-vous                 -->
     <!--******************************************************-->
 
     <!-- Titre du rendez-vous -->
     <style name="AppointmentTitle">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:background">@drawable/rounded_top_corners</item>
+        <item name="android:background">@drawable/rounded_corners_top_yellow</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingBottom">3dp</item>
+        <item name="android:padding">3dp</item>
     </style>
 
     <!-- Infos du rendez-vous -->
@@ -91,6 +116,11 @@
     <!--      Page de création/modification de rendez-vous    -->
     <!--******************************************************-->
 
+    <!-- Toute la section -->
+    <style name="SectionTheme" parent="@style/ClickableLayoutTheme">
+        <item name="android:padding">@dimen/default_margin</item>
+    </style>
+
     <!-- Titre de section (Titre,Date,Heure,Adresse etc) -->
     <style name="SectionTitleStyle">
         <item name="android:textColor">@color/yellow</item>
@@ -107,16 +137,18 @@
         <item name="android:textSize">13sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/default_margin</item>
         <item name="android:layout_marginTop">@dimen/little_margin</item>
+        <item name="android:layout_marginStart">@dimen/default_margin</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin</item>
+        <item name="android:paddingRight">@dimen/little_margin</item>
     </style>
 
     <!-- ligne qui sépare les séctions -->
-    <style name="BarTheme">
+    <style name="HorizontalBarTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:layout_marginTop">@dimen/default_margin</item>
-        <item name="android:layout_marginBottom">@dimen/default_margin</item>
+        <item name="android:layout_marginLeft">@dimen/default_margin</item>
+        <item name="android:layout_marginRight">@dimen/default_margin</item>
         <item name="android:background">@color/white</item>
     </style>
 
@@ -144,13 +176,15 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <!--EditText des AlertDialog -->
-    <style name="EditTextTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/rounded_empty_border</item>
-        <item name="android:paddingRight">@dimen/little_margin</item>
-        <item name="android:paddingLeft">@dimen/little_margin</item>
+    <!--TextView des CustomDialog -->
+    <style name="DialogTitleStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!--EditText des CustomDialog -->
+    <style name="DialogEditTextStyle">
         <item name="android:textColor">@color/white</item>
     </style>
 

@@ -16,18 +16,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/rounded_corners"
+                android:background="@drawable/rounded_corners_black"
                 android:orientation="vertical"
                 android:layout_marginBottom="@dimen/big_margin"
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginHorizontal="@dimen/default_margin"
-                android:padding="@dimen/default_margin"
                 tools:ignore="UselessParent">
 
                 <!-- titre -->
                 <RelativeLayout
                     android:id="@+id/title_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/title_label"
@@ -46,12 +45,12 @@
 
                 </RelativeLayout>
 
-                <View style="@style/BarTheme"/>
+                <View style="@style/HorizontalBarTheme"/>
 
                 <!-- date -->
                 <RelativeLayout
                     android:id="@+id/date_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/date_label"
@@ -70,12 +69,12 @@
 
                 </RelativeLayout>
 
-                <View style="@style/BarTheme"/>
+                <View style="@style/HorizontalBarTheme"/>
 
                 <!-- heure -->
                 <RelativeLayout
                     android:id="@+id/time_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/time_label"
@@ -94,12 +93,12 @@
 
                 </RelativeLayout>
 
-                <View style="@style/BarTheme"/>
+                <View style="@style/HorizontalBarTheme"/>
 
                 <!-- addresse -->
                 <RelativeLayout
                     android:id="@+id/address_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/address_label"
@@ -118,12 +117,12 @@
 
                 </RelativeLayout>
 
-                <View style="@style/BarTheme"/>
+                <View style="@style/HorizontalBarTheme"/>
 
                 <!-- contact -->
                 <RelativeLayout
                     android:id="@+id/contact_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/contact_label"
@@ -142,12 +141,12 @@
 
                 </RelativeLayout>
 
-                <View style="@style/BarTheme"/>
+                <View style="@style/HorizontalBarTheme"/>
 
                 <!-- téléphone -->
                 <RelativeLayout
                     android:id="@+id/phone_button"
-                    style="@style/ClickableLayoutTheme">
+                    style="@style/SectionTheme">
 
                     <TextView
                         android:id="@+id/phone_label"

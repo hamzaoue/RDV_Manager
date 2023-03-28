@@ -9,12 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /********************/
-public class DatabaseManager extends SQLiteOpenHelper
+public class AppointmentDataBase extends SQLiteOpenHelper
 {
     private static final String TABLE_NAME = "appointments";
     private static final String COL_ID = "id";
@@ -28,7 +27,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     private final SimpleDateFormat aDateFormat;
     /********************/
     @SuppressLint("SimpleDateFormat")
-    public DatabaseManager(Context context)
+    public AppointmentDataBase(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.aDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -93,8 +92,8 @@ public class DatabaseManager extends SQLiteOpenHelper
     public List<Appointment> getAppointments(String selectQuery)
     {
         List<Appointment> appointmentsList = new ArrayList<>();
-        try(SQLiteDatabase db = this.getWritableDatabase();Cursor cursor=db.rawQuery(
-                selectQuery + " ORDER BY " + COL_CALENDAR + " ASC",null))
+        try(SQLiteDatabase db = this.getWritableDatabase();Cursor cursor=db.rawQuery(selectQuery +
+                " ORDER BY " + COL_CALENDAR + " ASC",null))
         {
             if (cursor.moveToFirst())
             {

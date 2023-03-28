@@ -2,6 +2,7 @@ package com.example.rdvmanager;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.rdvmanager.fragments.MyAppointmentsFragment;
 import com.example.rdvmanager.fragments.SetAppointmentFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /********************/
@@ -22,11 +24,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 {
     private List<Appointment> aAppointments;
     private final MyAppointmentsFragment aMAF;
+    private final TextView aEmptyMessageTextView;
     /********************/
-    public AppointmentAdapter(MyAppointmentsFragment fragment, List<Appointment> appointments)
+    public AppointmentAdapter(MyAppointmentsFragment fragment, TextView textView)
     {
-        this.aAppointments = appointments;
+        this.aEmptyMessageTextView = textView;
+        this.aAppointments = new ArrayList<>();
         this.aMAF = fragment;
+        this.showEmptyMessage();
     }
     /********************/
     @SuppressLint("NotifyDataSetChanged")
@@ -34,6 +39,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     {
         this.aAppointments = appointments;
         this.notifyDataSetChanged();
+        this.showEmptyMessage();
     }
     /********************/
     @Override public int getItemCount() {return aAppointments.size();}
@@ -52,48 +58,62 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.aAppointmentTitle.setText(currentAppointment.getTitle());
         holder.aAppointmentDate.setText(currentAppointment.getDate());
         holder.aAppointmentTime.setText(currentAppointment.getTime());
-        holder.aMoreVert.setOnClickListener(view-> showOptionDialog(view,position));
+        holder.aMoreVert.setOnClickListener(view-> showOptionDialog(view,currentAppointment));
         holder.aAppointmentButton.setOnClickListener(view->
-            this.aMAF.loadFragment(new SetAppointmentFragment(this.aMAF, aAppointments.get(position))));
+            aMAF.loadFragment(new SetAppointmentFragment(currentAppointment)));
     }
     /********************/
-    private void showOptionDialog(View view, int position)
+    private void showEmptyMessage()
     {
-        CharSequence[] options = new CharSequence[]{"Appeler", "Ouvrir dans Maps", "Supprimer"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
-        builder.setTitle(this.aAppointments.get(position).getTitle());
-        builder.setItems(options, (dialog,which)->onOptionClicked(view,position,which));
-        builder.show();
+        if(this.getItemCount()==0)
+            this.aEmptyMessageTextView.setVisibility(View.VISIBLE);
+        else
+            this.aEmptyMessageTextView.setVisibility(View.INVISIBLE);
     }
     /********************/
-    private void onOptionClicked(View view, int position, int which)
+    private void showOptionDialog(View view, Appointment appointment)
+    {
+        Context context = view.getContext();
+        CharSequence[] options = new CharSequence[]
+                {context.getString(R.string.call),context.getString(R.string.open_in_map),
+                context.getString(R.string.share), context.getString(R.string.remove)};
+        AlertDialog.Builder builder=new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
+        builder.setTitle(appointment.getTitle());
+        builder.setItems(options, (dialog,which)->onOptionClicked(view,appointment,which));
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_corners_black);
+        alertDialog.show();
+    }
+    /********************/
+    private void onOptionClicked(View view,Appointment appointment, int which)
     {
         switch (which)
         {
-            case 0:break; // Appeler break;
-            case 1:break; // Ouvrir dans Maps break;
-            case 2:this.showRemoveConfirmationDialog(view, position);break; // Supprimer
+            case 0:this.aMAF.openPhone(view, appointment.getPhone());break;
+            case 1:this.aMAF.openMap(view, appointment.getAddress());break; // Ouvrir dans Maps break;
+            case 2:this.aMAF.shareAppointment(view, appointment);break;
+            case 3:this.showRemoveConfirmationDialog(view, appointment);break;
         }
     }
     /********************/
-    private void showRemoveConfirmationDialog(View view, int position)
+    private void showRemoveConfirmationDialog(View view, Appointment appointment)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
-        builder.setTitle("Confirmation");
-        builder.setMessage("Êtes-vous sûr de vouloir supprimer cet élément ?");
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setTitle(R.string.confirmation);
+        builder.setMessage(R.string.confirmation_message);
         builder.setNegativeButton(android.R.string.no, null);
-        builder.setPositiveButton(android.R.string.yes,(dialog,which)->removeAppointment(view,position));
+        builder.setPositiveButton(android.R.string.yes,(dialog,which)->removeAppointment(view,appointment));
         builder.show();
     }
     /********************/
-    private void removeAppointment(View view, int position)
+    private void removeAppointment(View view, Appointment appointment)
     {
-        DatabaseManager db = new DatabaseManager(view.getContext());
-        db.deleteAppointment(aAppointments.get(position).getId());
+        AppointmentDataBase db = new AppointmentDataBase(view.getContext());
+        db.deleteAppointment(appointment.getId());
         db.close();
-        aAppointments.remove(position);
-        notifyItemRemoved(position);
+        notifyItemRemoved(this.aAppointments.indexOf(appointment));
+        this.aAppointments.remove(appointment);
+        this.showEmptyMessage();
     }
     /********************/
     public static class ViewHolder extends RecyclerView.ViewHolder
