@@ -2,98 +2,134 @@ package com.example.rdvmanager;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rdvmanager.fragments.MyAppointmentsFragment;
 import com.example.rdvmanager.fragments.SetAppointmentFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /********************/
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder>
 {
-    private List<Appointment> aAppointments;
-    private final MyAppointmentsFragment aMAF;
+    private int aSelectedListId;
     private final TextView aEmptyMessageTextView;
+    private final List<Appointment> aUpcomingAppointments,  aPastAppointments;
     /********************/
-    public AppointmentAdapter(MyAppointmentsFragment fragment, TextView textView)
+    public AppointmentAdapter(List<Appointment> upcoming, List<Appointment> past, TextView textView)
     {
         this.aEmptyMessageTextView = textView;
-        this.aAppointments = new ArrayList<>();
-        this.aMAF = fragment;
-        this.showEmptyMessage();
+        this.aSelectedListId = R.id.Upcoming;
+        this.aUpcomingAppointments = upcoming;
+        this.aPastAppointments = past;
+        this.updateEmptyMessageVisibility();
     }
     /********************/
-    @SuppressLint("NotifyDataSetChanged")
-    public void setAppointments(List<Appointment> appointments)
-    {
-        this.aAppointments = appointments;
-        this.notifyDataSetChanged();
-        this.showEmptyMessage();
-    }
+    private void updateEmptyMessageVisibility()
+    {this.aEmptyMessageTextView.setVisibility(this.getItemCount()==0?View.VISIBLE:View.INVISIBLE);}
     /********************/
-    @Override public int getItemCount() {return aAppointments.size();}
+    @Override public int getItemCount() {return this.getCurrentList().size();}
     /********************/
-    @NonNull @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+     @NonNull @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new ViewHolder(inflater.inflate(R.layout.item_appointment,parent,false));
     }
     /********************/
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    @Override public void onBindViewHolder(ViewHolder holder, int position)
     {
-        Appointment currentAppointment = this.aAppointments.get(position);
+        Appointment currentAppointment = this.getCurrentList().get(position);
         holder.aAppointmentTitle.setText(currentAppointment.getTitle());
         holder.aAppointmentDate.setText(currentAppointment.getDate());
         holder.aAppointmentTime.setText(currentAppointment.getTime());
         holder.aMoreVert.setOnClickListener(view-> showOptionDialog(view,currentAppointment));
-        holder.aAppointmentButton.setOnClickListener(view->
-            aMAF.loadFragment(new SetAppointmentFragment(currentAppointment)));
+        holder.aMoreVert.setOnClickListener(view-> showOptionDialog(view,currentAppointment));
+        holder.aAppointmentButton.setOnClickListener(view->openEditFragment(view,currentAppointment));
     }
     /********************/
-    private void showEmptyMessage()
+    private void openEditFragment(View view, Appointment appointment)
     {
-        if(this.getItemCount()==0)
-            this.aEmptyMessageTextView.setVisibility(View.VISIBLE);
-        else
-            this.aEmptyMessageTextView.setVisibility(View.INVISIBLE);
+        FragmentTransaction transaction;
+        transaction = ((AppCompatActivity)view.getContext()).getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new SetAppointmentFragment(appointment));
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
     /********************/
-    private void showOptionDialog(View view, Appointment appointment)
+    @SuppressLint("NotifyDataSetChanged") public void setSelectedList(int id)
     {
-        Context context = view.getContext();
-        CharSequence[] options = new CharSequence[]
-                {context.getString(R.string.call),context.getString(R.string.open_in_map),
-                context.getString(R.string.share), context.getString(R.string.remove)};
+        this.aSelectedListId = id;
+        this.notifyDataSetChanged();
+        this.updateEmptyMessageVisibility();
+    }
+    /********************/
+    private List<Appointment> getCurrentList()
+    {
+        if(this.aSelectedListId == R.id.Upcoming)
+            return this.aUpcomingAppointments;
+        return this.aPastAppointments;
+    }
+    /********************/
+    public void showOptionDialog(View view, Appointment appointment)
+    {
+        String[] options = view.getContext().getResources().getStringArray(R.array.options);
         AlertDialog.Builder builder=new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
+        builder.setItems(options, (dialog,which) ->onOptionClicked(view,appointment,which));
         builder.setTitle(appointment.getTitle());
-        builder.setItems(options, (dialog,which)->onOptionClicked(view,appointment,which));
-        AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_corners_black);
-        alertDialog.show();
+        builder.show();
     }
     /********************/
-    private void onOptionClicked(View view,Appointment appointment, int which)
+    public void onOptionClicked(View view,Appointment appointment, int which)
     {
         switch (which)
         {
-            case 0:this.aMAF.openPhone(view, appointment.getPhone());break;
-            case 1:this.aMAF.openMap(view, appointment.getAddress());break; // Ouvrir dans Maps break;
-            case 2:this.aMAF.shareAppointment(view, appointment);break;
+            case 0:this.openPhone(view, appointment.getPhone());break;
+            case 1:this.openMap(view, appointment.getAddress());break;
+            case 2:this.shareAppointment(view, appointment);break;
             case 3:this.showRemoveConfirmationDialog(view, appointment);break;
         }
+    }
+    /********************/
+    private void openPhone(View view, String number)
+    {
+        if (number != null && PhoneNumberUtils.isGlobalPhoneNumber(number.replaceAll("\\s", "")))
+            view.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
+        else
+            Toast.makeText(view.getContext(),R.string.invalid_number, Toast.LENGTH_SHORT).show();
+    }
+    /********************/
+    private void openMap(View view, String address)
+    {
+        if (address != null && !address.isEmpty())
+        {
+            Uri geoLocation = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoLocation);
+            mapIntent.setPackage("com.google.android.apps.maps");//Définit appli par défault
+            view.getContext().startActivity(mapIntent);
+        }
+        else
+            Toast.makeText(view.getContext(),R.string.invalid_address, Toast.LENGTH_SHORT).show();
+    }
+    /********************/
+    private void shareAppointment(View view, Appointment appointment)
+    {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, appointment.toString(view.getContext()));
+        sendIntent.setType("text/plain");
+        view.getContext().startActivity(sendIntent);
     }
     /********************/
     private void showRemoveConfirmationDialog(View view, Appointment appointment)
@@ -102,18 +138,22 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         builder.setTitle(R.string.confirmation);
         builder.setMessage(R.string.confirmation_message);
         builder.setNegativeButton(android.R.string.no, null);
-        builder.setPositiveButton(android.R.string.yes,(dialog,which)->removeAppointment(view,appointment));
+        builder.setPositiveButton(android.R.string.yes,(dialog,which)
+                -> this.removeAppointment(view, appointment));
         builder.show();
     }
     /********************/
-    private void removeAppointment(View view, Appointment appointment)
+    private void removeAppointment(View view,Appointment appointment)
     {
+        //Supprime de la liste
+        this.notifyItemRemoved(this.getCurrentList().indexOf(appointment));
+        this.getCurrentList().remove(appointment);
+        this.updateEmptyMessageVisibility();
+        //Supprime de la base de donnée
         AppointmentDataBase db = new AppointmentDataBase(view.getContext());
         db.deleteAppointment(appointment.getId());
         db.close();
-        notifyItemRemoved(this.aAppointments.indexOf(appointment));
-        this.aAppointments.remove(appointment);
-        this.showEmptyMessage();
+
     }
     /********************/
     public static class ViewHolder extends RecyclerView.ViewHolder
@@ -122,11 +162,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         private final RelativeLayout aAppointmentButton;
         private final ImageView aMoreVert;
         /********************/
-        public ViewHolder(@NonNull View itemView)
+        public ViewHolder(View itemView)
         {
             super(itemView);
-            this.aAppointmentTitle= itemView.findViewById(R.id.appointment_title);
-            this.aAppointmentDate= itemView.findViewById(R.id.appointment_date);
+            this.aAppointmentTitle = itemView.findViewById(R.id.appointment_title);
+            this.aAppointmentDate = itemView.findViewById(R.id.appointment_date);
             this.aAppointmentTime = itemView.findViewById(R.id.appointment_time);
             this.aMoreVert = itemView.findViewById(R.id.more_vert);
             this.aAppointmentButton = itemView.findViewById(R.id.appointment_button);

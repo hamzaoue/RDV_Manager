@@ -32,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.example.rdvmanager.Appointment;
 import com.example.rdvmanager.AppointmentDataBase;
 import com.example.rdvmanager.CustomDialog;
+import com.example.rdvmanager.MainActivity;
 import com.example.rdvmanager.R;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -46,11 +47,9 @@ import java.util.List;
 public class SetAppointmentFragment extends Fragment
 {
     private final Appointment aAppointment;
-    private ActivityResultLauncher<Intent> aContactLauncher , aLocationLauncher;
     private ActivityResultLauncher<String> aRequestPermissionLauncher;
+    private ActivityResultLauncher<Intent> aContactLauncher , aLocationLauncher;
     private EditText aTitleEditText, aAddressEditText, aContactEditText, aPhoneEditText;
-
-
     /********************/
     public SetAppointmentFragment() {this.aAppointment = new Appointment();}
     public SetAppointmentFragment(Appointment appointment) {this.aAppointment = appointment;}
@@ -58,19 +57,12 @@ public class SetAppointmentFragment extends Fragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle)
     {
         View view = inflater.inflate(R.layout.fragment_set_appointment,container,false);
-
-        //Définit l'action du bouton cancel et ok
+        int title = aAppointment.getId()!=-1?R.string.appointment_information:R.string.new_appointment;
+        ((MainActivity)requireActivity()).setActionBarTitle(title);
         view.findViewById(R.id.cancel_button).setOnClickListener(this::backToMyAppointment);
         view.findViewById(R.id.save_button).setOnClickListener(this::saveAppointment);
-
-        // Launchers chargés respectivement: d'ouvrir les contacts, d'ouvrir l'API d'autocomplétion
-        // de lieux et de demander la permission d'acceder aux contacts
         this.setLaunchers(view);
-
-        //Créer les boîtes de dialogues qui servent à modifier les champs
         this.setDialogs(view);
-
-        //Remplit les champs de texte avec les valeurs existante si modification d'un rendez-vous
         this.fillTextViews(view);
         return view;
     }
@@ -99,7 +91,7 @@ public class SetAppointmentFragment extends Fragment
         if(isEmpty(R.id.title) || isEmpty(R.id.date) ||isEmpty(R.id.time)){return;}
         this.updateAppointment();
         AppointmentDataBase appointmentDataBase = new AppointmentDataBase(view.getContext());
-        appointmentDataBase.addAppointment(this.aAppointment);
+        appointmentDataBase.addAppointment(view.getContext(), this.aAppointment);
         appointmentDataBase.close();
         this.backToMyAppointment(view);
     }
@@ -108,11 +100,9 @@ public class SetAppointmentFragment extends Fragment
     {
         TextView textView = requireView().findViewById(textViewId);
         String text = textView.getText().toString().trim();
+        textView.setError("");
         if(TextUtils.isEmpty(text))
-        {
-            textView.setError("");
             Toast.makeText(this.requireContext(),R.string.empty_field, Toast.LENGTH_SHORT).show();
-        }
         else
             textView.setError(null);
         return TextUtils.isEmpty(text);
@@ -129,12 +119,11 @@ public class SetAppointmentFragment extends Fragment
     private void fillTextViews(View view)
     {
         if(this.aAppointment.getId()==-1){return;}
-        ((TextView)view.findViewById(R.id.title)).setText(aAppointment.getTitle());
-        ((TextView)view.findViewById(R.id.address)).setText(aAppointment.getAddress());
-        ((TextView)view.findViewById(R.id.contact)).setText(aAppointment.getContact());
-        ((TextView)view.findViewById(R.id.date)).setText(aAppointment.getDate());
-        ((TextView)view.findViewById(R.id.time)).setText(aAppointment.getTime());
-        ((TextView)view.findViewById(R.id.phone)).setText(aAppointment.getPhone());
+        int[] textViewId = {R.id.title,R.id.address,R.id.contact,R.id.date,R.id.time,R.id.phone};
+        String[] content = {aAppointment.getTitle(),aAppointment.getAddress(),aAppointment.getContact(),
+                aAppointment.getDate(),aAppointment.getTime(),aAppointment.getPhone()};
+        for(int i = 0; i < content.length; i++)
+            ((TextView)view.findViewById(textViewId[i])).setText(content[i]);
         this.aTitleEditText.setText(aAppointment.getTitle());
         this.aContactEditText.setText(aAppointment.getContact());
         this.aPhoneEditText.setText(aAppointment.getPhone());
@@ -156,8 +145,8 @@ public class SetAppointmentFragment extends Fragment
                 R.drawable.ic_phone, R.id.phone, this::pickContact, InputType.TYPE_CLASS_PHONE);
     }
     /********************/
-    private EditText setDialog(View view, int button_id, int title_id, int icon_id, int textView_id,
-                               View.OnClickListener listener, int inputType)
+    private EditText setDialog(View view, int button_id, int title_id, int icon_id,
+                               int textView_id, View.OnClickListener listener, int inputType)
     {
         // Créer la boîte de dialogue
         Context context = this.requireContext();
@@ -203,9 +192,6 @@ public class SetAppointmentFragment extends Fragment
         // Créer la boîte de dialogue
         DatePickerDialog dialog = new DatePickerDialog(this.requireContext(),R.style.MyDialogTheme);
 
-        //Bouton qui ouvre le datePicker
-        view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
-
         //Configure le bouton ok pour remplir le textView avec la date au bon format
         TextView dateView = view.findViewById(R.id.date);
         dialog.setOnDateSetListener((view1, year, month, day) ->
@@ -213,6 +199,9 @@ public class SetAppointmentFragment extends Fragment
             this.aAppointment.getCalendar().set(year,month,day);
             dateView.setText(this.aAppointment.getDate());
         });
+
+        //Bouton qui ouvre le datePicker
+        view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
     }
     /********************/
     private void generateTitle(View view)
@@ -241,15 +230,12 @@ public class SetAppointmentFragment extends Fragment
     /********************/
     private void pickContact(View view)
     {
-        String permission =Manifest.permission.READ_CONTACTS ;
+        String permission = Manifest.permission.READ_CONTACTS ;
         int hasPermission = ContextCompat.checkSelfPermission(this.requireContext(), permission);
         if(hasPermission != PackageManager.PERMISSION_GRANTED)
-            aRequestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+            aRequestPermissionLauncher.launch(permission);
         else
-        {
-            Intent toContact = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-            aContactLauncher.launch(toContact);
-        }
+            aContactLauncher.launch(new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI));
     }
     /********************/
     private void onContactPicked(ActivityResult result)

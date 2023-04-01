@@ -2,28 +2,31 @@ package com.example.rdvmanager;
 
 import android.content.Context;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /********************/
 public class Appointment
 {
-    private final int aId;//Identifant dans la base de donnée,si -1 = pas créé par la base de donnée
+    private long aId;//Identifant dans la base de donnée,si -1 = pas dans la base de donnée
     private String aTitle, aContact, aPhone, aAddress;
     private final Calendar aCalendar;
     /********************/
     public Appointment(int id) {this.aId = id; this.aCalendar = Calendar.getInstance();}
     public Appointment(){this.aId = -1; this.aCalendar = Calendar.getInstance();}
     /********************/
+    public long getId(){return this.aId;}
     public String getTitle() {return this.aTitle;}
     public String getContact(){return this.aContact;}
     public String getPhone(){return this.aPhone;}
     public String getAddress(){return this.aAddress;}
     public Calendar getCalendar(){return this.aCalendar;}
-    public int getId(){return this.aId;}
     /********************/
+    public void setId(long id){this.aId = id;}
     public void setTitle(String title) {this.aTitle = title;}
     public void setContact(String contact){this.aContact = contact;}
     public void setPhone(String phone){this.aPhone = phone;}
@@ -43,19 +46,12 @@ public class Appointment
     /********************/
     public String toString(Context context)
     {
+        int[] fields = {R.string.title,R.string.date,R.string.time,R.string.address,R.string.contact,R.string.phone};
+        String[] values = {getTitle(), getDate(), getTime(), getAddress(),getContact(),getPhone()};
         StringBuilder sb = new StringBuilder();
-        if (this.getTitle() != null && !this.getTitle().isEmpty())
-            sb.append(context.getString(R.string.title)).append(" : ").append(this.getTitle()).append("\n");
-        if (this.getDate() != null && !this.getDate().isEmpty())
-            sb.append(context.getString(R.string.date)).append(" : ").append(this.getDate()).append("\n");
-        if (this.getTime() != null && !this.getTime().isEmpty())
-            sb.append(context.getString(R.string.time)).append(" : ").append(this.getTime()).append("\n");
-        if (this.getAddress() != null && !this.getAddress().isEmpty())
-            sb.append(context.getString(R.string.address)).append(" : ").append(this.getAddress()).append("\n");
-        if (this.getContact() != null && !this.getContact().isEmpty())
-            sb.append(context.getString(R.string.contact)).append(" : ").append(this.getContact()).append("\n");
-        if (this.getPhone() != null && !this.getPhone().isEmpty())
-            sb.append(context.getString(R.string.phone)).append(" : ").append(this.getPhone()).append("\n");
+        for(int i = 0; i < values.length; i++)
+            if(values[i] != null && !values[i].isEmpty())
+                sb.append(context.getString(fields[i])).append(" : ").append(values[i]).append("\n");
         return sb.toString();
     }
 }

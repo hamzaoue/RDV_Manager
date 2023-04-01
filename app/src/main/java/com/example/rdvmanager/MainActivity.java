@@ -1,10 +1,11 @@
 package com.example.rdvmanager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +18,13 @@ import com.example.rdvmanager.fragments.PreferencesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /********************/
 public class MainActivity extends AppCompatActivity
 {
-    private int SELECTED_FRAGMENT;
-    private final MyAppointmentsFragment aMAF;
-    private final PreferencesFragment aPF;
+    private int SELECTED_ITEM_ID = R.id.Appointments;
+    private final Fragment aMAF,  aPF;
     /********************/
     public MainActivity()
     {
@@ -31,73 +32,62 @@ public class MainActivity extends AppCompatActivity
         this.aPF = new PreferencesFragment();
     }
     /********************/
+    public void setActionBarTitle(int title){
+        Objects.requireNonNull(this.getSupportActionBar()).setTitle(title);}
+    /********************/
     @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        //Mémorise la page au moment de la suppression de l'activité pour pouvoir y retourner
-        outState.putInt("Fragment", SELECTED_FRAGMENT);
+        outState.putInt("Fragment", SELECTED_ITEM_ID);
     }
     /********************/
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.setDarkMode();
-        this.setDefaultLanguage();
-        this.setContentView(R.layout.activity_main);
-
-        //Importation de la barre de navigation de page
-        BottomNavigationView bottomNavigationView = this.findViewById(R.id.bottom_navigation_view);
-        bottomNavigationView.setOnItemSelectedListener(this::bottomNavigation);
-
-        //Si l'activité à été recrée, retourne au fragment d'avant
-        if(savedInstanceState != null)
-            SELECTED_FRAGMENT = savedInstanceState.getInt("Fragment",R.id.Appointments);
-        else
-            SELECTED_FRAGMENT = R.id.Appointments;
+        this.setTheme(R.style.MyTheme);
+        this.setupDarkMode();
+        this.setupDefaultLanguage();
+        super.setContentView(R.layout.activity_main);
+        this.setupNavigationBar(savedInstanceState);
         this.loadSelectedFragment();
     }
-
     /********************/
-    public boolean bottomNavigation(MenuItem item)
+    private void setupNavigationBar(Bundle savedInstanceState)
     {
-        SELECTED_FRAGMENT = item.getItemId();
-        this.loadSelectedFragment();
-        return true;
+        if(savedInstanceState != null)
+            SELECTED_ITEM_ID = savedInstanceState.getInt("Fragment",R.id.Appointments);
+        BottomNavigationView bottomNavigationView = this.findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView.setOnItemSelectedListener(item->
+        {SELECTED_ITEM_ID = item.getItemId();this.loadSelectedFragment();return true;});
     }
     /********************/
     private void loadSelectedFragment()
     {
-        Fragment fragment = this.aMAF;
-        if(SELECTED_FRAGMENT == R.id.Appointments)
-            ((TextView)this.findViewById(R.id.page_title)).setText(R.string.my_appointments);
-        else if(SELECTED_FRAGMENT == R.id.Preferences)
-        {
-            ((TextView)this.findViewById(R.id.page_title)).setText(R.string.preferences);
-            fragment = this.aPF;
-        }
+        Fragment fragment = (SELECTED_ITEM_ID == R.id.Preferences) ? this.aPF:this.aMAF;
         FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
     /********************/
-    private void setDarkMode()
+    private void setupDarkMode()
     {
-        AppCompatDelegate.setDefaultNightMode(this.getSharedPreferences( "AppointmentPreferences"
-                , Context.MODE_PRIVATE).getBoolean("DarkMode",true)?
-                AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getBoolean("DarkMode",false))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
     /********************/
-    private void setDefaultLanguage()
+    private void setupDefaultLanguage()
     {
-        String[] languages = getResources().getStringArray(R.array.languages);
-        String languageToLoad = languages[this.getSharedPreferences("AppointmentPreferences"
-                , Context.MODE_PRIVATE).getInt("Language",0)].toLowerCase();
-        Locale locale = new Locale(languageToLoad);
-        Locale.setDefault(locale);
-        Configuration config = this.getBaseContext().getResources().getConfiguration();
-        config.setLocale(locale);
-        this.getBaseContext().getResources().updateConfiguration(config,
-                this.getBaseContext().getResources().getDisplayMetrics());
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        Resources resources = this.getBaseContext().getResources();
+        String[] languages = resources.getStringArray(R.array.languages);
+        String language = languages[preferences.getInt("Language",0)];
+        Locale.setDefault(new Locale(language.toLowerCase()));
+        Configuration config = resources.getConfiguration();
+        config.setLocale(Locale.getDefault());
+        resources.updateConfiguration(config,resources.getDisplayMetrics());
     }
 }

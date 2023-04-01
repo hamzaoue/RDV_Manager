@@ -39,10 +39,9 @@
             android:textColor="@color/white"
             android:paddingBottom="@dimen/big_margin"
             android:textSize="18dp"/>
-
     </FrameLayout>
 
-    <!-- Bouton -->
+    <!-- Bouton Ajouter -->
     <Button
         android:id="@+id/add_appointment"
         android:text="@string/add"

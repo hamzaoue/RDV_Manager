@@ -30,7 +30,7 @@
                 android:entries="@array/languages"
                 android:gravity="end"
                 android:paddingEnd="25dp"
-                android:spinnerMode="dialog"
+                android:spinnerMode="dropdown"
                 android:theme="@style/MyTheme"
                 tools:ignore="RtlSymmetry" />
 
@@ -49,8 +49,8 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/background_music"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:checked="false"
                 android:theme="@style/MyTheme"
                 tools:ignore="DuplicateSpeakableTextCheck" />
@@ -70,14 +70,16 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/dark_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:checked="false"
                 android:theme="@style/MyTheme" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/BackgroundTheme">
+        <LinearLayout
+            android:id="@+id/notification_button"
+            style="@style/BackgroundTheme">
 
             <TextView
                 android:layout_width="0dp"
@@ -90,8 +92,8 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/notification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:checked="false"
                 android:theme="@style/MyTheme" />
 

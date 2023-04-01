@@ -1,7 +1,7 @@
 <resources>
     <!-- Nom de l'application -->
     <string name="app_name">RDV Manager</string>
-    <string name="api_key">AIzaSyC8hWCstLUdkPp18SdIb17QtSr48BeSUZE</string>
+    <string name="api_key">A</string>
 
     <!--******************************************************-->
     <!--               Page de mes rendez-vous                -->
@@ -9,12 +9,20 @@
     <string name="my_appointments">My Appointments</string>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
-    <string name="no_appointments">No Appointments</string>
     <string name="add">Add</string>
+    <string name="no_appointments">No appointments</string>
 
     <!--******************************************************-->
     <!--      Boîtes de dialogue dans page mes rendez-vous    -->
     <!--******************************************************-->
+
+    <string-array name="options">
+        <item>@string/call</item>
+        <item>@string/open_in_map</item>
+        <item>@string/share</item>
+        <item>@string/remove</item>
+    </string-array>
+
     <string name="share">Share</string>
     <string name="call">Call the number</string>
     <string name="open_in_map">Open in maps</string>
@@ -33,6 +41,8 @@
     <!--******************************************************-->
     <!--      Page de création/modification de rendez-vous    -->
     <!--******************************************************-->
+    <string name="appointment_information">Appointment information</string>
+    <string name="new_appointment">New appointment</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
@@ -63,6 +73,15 @@
     <string-array name="languages">
         <item>FR</item>
         <item>EN</item>
+    </string-array>
+    <string name="send_notification">Send a notification before each appointment</string>
+    <string name="two_hours_before">2 hours before</string>
+    <string name="one_day_before">1 day before</string>
+    <string name="one_week_before">1 week before</string>
+    <string-array name="notifications">
+        <item>@string/two_hours_before</item>
+        <item>@string/one_day_before</item>
+        <item>@string/one_week_before</item>
     </string-array>
 
 </resources>

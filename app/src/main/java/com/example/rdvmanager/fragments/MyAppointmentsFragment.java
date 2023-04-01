@@ -1,18 +1,12 @@
 package com.example.rdvmanager.fragments;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,93 +14,70 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.rdvmanager.Appointment;
 import com.example.rdvmanager.AppointmentAdapter;
 import com.example.rdvmanager.AppointmentDataBase;
+import com.example.rdvmanager.MainActivity;
 import com.example.rdvmanager.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 /********************/
 public class MyAppointmentsFragment extends Fragment
 {
-    private int aSelectedItem = R.id.Upcoming;
-    private AppointmentAdapter aAdapter;
-    private ActivityResultLauncher<Intent> aLauncher;
     /********************/
     public MyAppointmentsFragment(){}
     /********************/
     @Override public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedState)
     {
         View view = inflater.inflate(R.layout.fragment_my_appointments, container, false);
-
-        //Importation de la barre de navigation de MyAppointments
-        BottomNavigationView appointmentsNavigationView = view.findViewById(R.id.appointments_navigation_view);
-        appointmentsNavigationView.setOnItemSelectedListener(this::onNavigationItemSelected);
-
-        //Importation du bouton "Ajouter"
-        Button addAppointmentButton = view.findViewById(R.id.add_appointment);
-        addAppointmentButton.setOnClickListener(view1->
-                this.loadFragment(new SetAppointmentFragment()));
-        //Adapter
-        this.aAdapter = new AppointmentAdapter(this, view.findViewById(R.id.empty_message));
-        this.updateAdapterList();
-        RecyclerView recyclerView = view.findViewById(R.id.vertical_recycler_view);
-        recyclerView.setAdapter(this.aAdapter);
-
-        //Launcher pour ouvrir d'autres applications
-        this.aLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),result->{});
+        ((MainActivity)this.requireActivity()).setActionBarTitle(R.string.my_appointments);
+        AppointmentAdapter adapter = this.createAdapter(view);
+        this.setupRecyclerView(view, adapter);
+        this.setupNavigationView(view, adapter);
+        this.setupAddButton(view);
         return view;
     }
     /********************/
-    public boolean onNavigationItemSelected(MenuItem item)
+    @Override public void onResume()
     {
-        this.aSelectedItem = item.getItemId();
-        this.updateAdapterList();
-        return true;
+        super.onResume();
+        BottomNavigationView appointmentsNavigationView;
+        appointmentsNavigationView = requireView().findViewById(R.id.appointments_navigation_view);
+        appointmentsNavigationView.setSelectedItemId(R.id.Upcoming);
     }
     /********************/
-    private void updateAdapterList()
+    private AppointmentAdapter createAdapter(View view)
     {
-        AppointmentDataBase db = new AppointmentDataBase(requireContext());
-        if(this.aSelectedItem == R.id.Upcoming)
-            this.aAdapter.setAppointments(db.getUpcomingAppointments());
-        else if(this.aSelectedItem == R.id.Past)
-            this.aAdapter.setAppointments(db.getPastAppointments());
+        TextView textView = view.findViewById(R.id.empty_message);
+        AppointmentDataBase db = new AppointmentDataBase(view.getContext());
+        List<Appointment> upcoming = db.getUpcomingAppointments();
+        List<Appointment> past = db.getPastAppointments();
         db.close();
+        return new AppointmentAdapter(upcoming, past, textView);
     }
     /********************/
-    public void loadFragment(Fragment fragment)
+    private void setupRecyclerView(View view, AppointmentAdapter adapter)
     {
-        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        RecyclerView recyclerView = view.findViewById(R.id.vertical_recycler_view);
+        recyclerView.setAdapter(adapter);
     }
     /********************/
-    public void openPhone(View view, String phoneNumber)
+    private void setupNavigationView(View view, AppointmentAdapter adapter)
     {
-        if (phoneNumber != null && !phoneNumber.isEmpty() && PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber))
-            this.aLauncher.launch(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
-        else
-            Toast.makeText(view.getContext(),R.string.invalid_number, Toast.LENGTH_SHORT).show();
+        BottomNavigationView appointmentsNavigationView;
+        appointmentsNavigationView = view.findViewById(R.id.appointments_navigation_view);
+        appointmentsNavigationView.setOnItemSelectedListener(item ->
+        {adapter.setSelectedList(item.getItemId());return true;});
     }
     /********************/
-    public void openMap(View view, String address)
+    private void setupAddButton(View view)
     {
-        if (address != null && !address.isEmpty())
+        Button addAppointmentButton = view.findViewById(R.id.add_appointment);
+        addAppointmentButton.setOnClickListener(view1 ->
         {
-            Uri geoLocation = Uri.parse("geo:0,0?q=" + Uri.encode(address));
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoLocation);
-            mapIntent.setPackage("com.google.android.apps.maps"); // Si l'application Google Maps est installée
-            this.aLauncher.launch( mapIntent);
-        }
-        else
-            Toast.makeText(view.getContext(),R.string.invalid_address, Toast.LENGTH_SHORT).show();
-    }
-    /********************/
-    public void shareAppointment(View view, Appointment appointment)
-    {
-        Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, appointment.toString(view.getContext()));
-        sendIntent.setType("text/plain");
-        this.aLauncher.launch(sendIntent);
+            FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new SetAppointmentFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
     }
 }

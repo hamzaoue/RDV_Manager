@@ -8,20 +8,11 @@
     android:background="@color/yellow"
     tools:context=".MainActivity">
 
-    <!--Barre de Titre de page-->
-    <TextView
-        android:id="@+id/page_title"
-        android:text="@string/my_appointments"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/TitleStyle"/>
-
     <!--Fragment-->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/title_bar_size"
         android:layout_marginBottom="@dimen/title_bar_size"
         android:background="@color/grey_blue"/>
 
@@ -35,7 +26,6 @@
         app:itemIconTint="@drawable/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu"
-        style="NavigationBarStyle"
-        tools:ignore="VisualLintBottomNav" />
+        style="NavigationBarStyle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

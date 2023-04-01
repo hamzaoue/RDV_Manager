@@ -1,23 +1,19 @@
 package com.example.rdvmanager;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import androidx.core.content.ContextCompat;
 
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.ImageButton;
-import android.widget.EditText;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.view.ViewGroup;
+import android.graphics.PorterDuff;
+import android.text.InputType;
+import android.view.Gravity;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 /********************/
 public class CustomDialog extends AlertDialog
@@ -33,8 +29,6 @@ public class CustomDialog extends AlertDialog
         this.aEditText = this.createEditText(context);
         this.aTitleView = this.createTextView(context,title_id);
         this.setView(this.createLayout(context));
-        Window window = this.getWindow();
-        window.setBackgroundDrawableResource(R.drawable.rounded_corners_black);
         this.setButton(BUTTON_NEGATIVE,context.getString(R.string.cancel),(dialog,which)->{});
     }
     /********************/
@@ -43,11 +37,11 @@ public class CustomDialog extends AlertDialog
     /********************/
     private ImageButton createImageButton(Context context, int icon_id)
     {
-        ImageButton imageButton = new ImageButton(context);
-        imageButton.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_corners_yellow));
-        imageButton.setImageResource(icon_id);
-        imageButton.setColorFilter(ContextCompat.getColor(context, R.color.black), PorterDuff.Mode.SRC_IN);
-        return imageButton;
+        ImageButton button = new ImageButton(context);
+        button.setImageResource(icon_id);
+        button.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_corners_yellow));
+        button.setColorFilter(ContextCompat.getColor(context,R.color.black),PorterDuff.Mode.SRC_IN);
+        return button;
     }
     /********************/
     private EditText createEditText(Context context)
@@ -59,11 +53,6 @@ public class CustomDialog extends AlertDialog
         editText.setMaxLines(10);
         editText.setHorizontallyScrolling(false);
         editText.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_empty_border));
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count)
-            {editText.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));}});
         return editText;
     }
     /********************/
@@ -80,7 +69,6 @@ public class CustomDialog extends AlertDialog
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setPadding(30,30,30,30);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
         linearLayout.addView(this.createFirstRow(context));
         linearLayout.addView(this.createSecondRow(context));
         return linearLayout;
@@ -88,11 +76,11 @@ public class CustomDialog extends AlertDialog
     /********************/
     private LinearLayout createFirstRow(Context context)
     {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
+        params.setMargins(0, 0, 10, 20);
         LinearLayout firstRow = new LinearLayout(context);
         firstRow.setOrientation(LinearLayout.HORIZONTAL);
         firstRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
-        params.setMargins(0, 0, 10, 20);
         firstRow.addView(this.aImageButton,params);
         firstRow.addView(this.aTitleView);
         return firstRow;
@@ -101,10 +89,7 @@ public class CustomDialog extends AlertDialog
     private LinearLayout createSecondRow(Context context)
     {
         LinearLayout secondRow = new LinearLayout(context);
-        secondRow.setOrientation(LinearLayout.HORIZONTAL);
-        secondRow.setGravity(Gravity.CENTER_VERTICAL);
         secondRow.addView(this.aEditText, new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
         return secondRow;
     }
-
 }
