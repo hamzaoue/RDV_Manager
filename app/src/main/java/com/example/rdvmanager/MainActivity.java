@@ -1,8 +1,6 @@
 package com.example.rdvmanager;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,7 +21,6 @@ import java.util.Objects;
 /********************/
 public class MainActivity extends AppCompatActivity
 {
-    private int SELECTED_ITEM_ID = R.id.Appointments;
     private final Fragment aMAF,  aPF;
     /********************/
     public MainActivity()
@@ -38,32 +35,30 @@ public class MainActivity extends AppCompatActivity
     @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putInt("Fragment", SELECTED_ITEM_ID);
-    }
-    /********************/
-    @Override protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        this.setTheme(R.style.MyTheme);
-        this.setupDarkMode();
-        this.setupDefaultLanguage();
-        super.setContentView(R.layout.activity_main);
-        this.setupNavigationBar(savedInstanceState);
-        this.loadSelectedFragment();
-    }
-    /********************/
-    private void setupNavigationBar(Bundle savedInstanceState)
-    {
-        if(savedInstanceState != null)
-            SELECTED_ITEM_ID = savedInstanceState.getInt("Fragment",R.id.Appointments);
         BottomNavigationView bottomNavigationView = this.findViewById(R.id.bottom_navigation_view);
-        bottomNavigationView.setOnItemSelectedListener(item->
-        {SELECTED_ITEM_ID = item.getItemId();this.loadSelectedFragment();return true;});
+        outState.putInt("SelectedItemId", bottomNavigationView.getSelectedItemId());
     }
     /********************/
-    private void loadSelectedFragment()
+    @Override protected void onCreate(Bundle save)
     {
-        Fragment fragment = (SELECTED_ITEM_ID == R.id.Preferences) ? this.aPF:this.aMAF;
+        super.onCreate(save);
+        this.setupDefaultLanguage();
+        this.setupDarkMode();
+        super.setContentView(R.layout.activity_main);
+        this.setupBottomNavigationBar();
+        this.loadFragment((save == null) ? R.id.Appointments : save.getInt("SelectedItemId"));
+    }
+    /********************/
+    private void setupBottomNavigationBar()
+    {
+        BottomNavigationView BottomNavigationView = this.findViewById(R.id.bottom_navigation_view);
+        BottomNavigationView.setOnItemSelectedListener(item ->{
+            loadFragment(item.getItemId());return true;});
+    }
+    /********************/
+    private void loadFragment(int selectedItemId)
+    {
+        Fragment fragment = (selectedItemId == R.id.Appointments) ? this.aMAF : this.aPF;
         FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -73,21 +68,19 @@ public class MainActivity extends AppCompatActivity
     private void setupDarkMode()
     {
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean("DarkMode",false))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        boolean darkModeOn = preferences.getBoolean("DarkMode",false);
+        int mode = darkModeOn ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
     /********************/
     private void setupDefaultLanguage()
     {
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
         Resources resources = this.getBaseContext().getResources();
         String[] languages = resources.getStringArray(R.array.languages);
-        String language = languages[preferences.getInt("Language",0)];
-        Locale.setDefault(new Locale(language.toLowerCase()));
-        Configuration config = resources.getConfiguration();
-        config.setLocale(Locale.getDefault());
-        resources.updateConfiguration(config,resources.getDisplayMetrics());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String selectedLanguage = languages[preferences.getInt("Language",0)];
+        Locale.setDefault(new Locale(selectedLanguage.toLowerCase()));
+        resources.getConfiguration().setLocale(Locale.getDefault());
+        resources.updateConfiguration(resources.getConfiguration(),resources.getDisplayMetrics());
     }
 }

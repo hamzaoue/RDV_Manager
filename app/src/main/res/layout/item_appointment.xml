@@ -14,14 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        style="@style/AppointmentTitle"/>
+        android:background="@drawable/rounded_corners_top_yellow"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:padding="3dp"/>
 
     <!-- Rectangle noir-->
     <RelativeLayout
         android:id="@+id/appointment_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/ClickableLayoutTheme">
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/round_corners_ripple">
 
         <!-- Icone more vert  -->
         <ImageView

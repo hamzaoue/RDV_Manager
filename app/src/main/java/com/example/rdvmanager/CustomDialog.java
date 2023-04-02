@@ -24,7 +24,7 @@ public class CustomDialog extends AlertDialog
     /********************/
     public CustomDialog(Context context, int title_id, int icon_id)
     {
-        super(context,R.style.MyDialogTheme);
+        super(context);
         this.aImageButton = this.createImageButton(context , icon_id);
         this.aEditText = this.createEditText(context);
         this.aTitleView = this.createTextView(context,title_id);
@@ -47,7 +47,6 @@ public class CustomDialog extends AlertDialog
     private EditText createEditText(Context context)
     {
         EditText editText = new EditText(context);
-        editText.setTextAppearance(R.style.DialogEditTextStyle);
         editText.setPadding(10,0,10,0);
         editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         editText.setMaxLines(10);

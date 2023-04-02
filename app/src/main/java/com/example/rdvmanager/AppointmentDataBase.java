@@ -1,10 +1,7 @@
 package com.example.rdvmanager;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -36,8 +33,7 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         this.aDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.FRANCE);
     }
     /********************/
-    @Override
-    public void onCreate(SQLiteDatabase db)
+    @Override public void onCreate(SQLiteDatabase db)
     {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -47,14 +43,12 @@ public class AppointmentDataBase extends SQLiteOpenHelper
                 + CONTACT + " TEXT,"
                 + PHONE + " TEXT)";
         db.execSQL(CREATE_TABLE);
-        db.close();
     }
     /********************/
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        this.onCreate(db);
     }
     /********************/
     public List<Appointment> getPastAppointments()
@@ -71,15 +65,12 @@ public class AppointmentDataBase extends SQLiteOpenHelper
     /********************/
     public List<Appointment> getAppointments(String condition)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
         List<Appointment> appointmentsList = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NAME + condition + " ORDER BY " + CALENDAR + " ASC";
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst())
-            do appointmentsList.add(this.getAppointment(cursor));
-            while (cursor.moveToNext());
-        cursor.close();
-        db.close();
+        Cursor cursor = this.getWritableDatabase().rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {appointmentsList.add(this.getAppointment(cursor));}
+            while (cursor.moveToNext());}
         return appointmentsList;
     }
     /**************/
@@ -96,7 +87,7 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         return appointment;
     }
     /********************/
-    public void addAppointment(Context context, Appointment appointment)
+    public void addAppointment(Appointment appointment)
     {
         ContentValues values = new ContentValues();
         values.put(TITLE, appointment.getTitle());
@@ -111,19 +102,11 @@ public class AppointmentDataBase extends SQLiteOpenHelper
             appointment.setId(db.insert(TABLE_NAME, null, values));
         else
             db.update(TABLE_NAME, values, ID + " = ?", new String[]{"" + appointment.getId()});
-        db.close();
-        this.scheduleNotification(context, appointment);
     }
     /********************/
     public void deleteAppointment(long id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
-        db.close();
-    }
-    /********************/
-    private void scheduleNotification(Context context, Appointment appointment)
-    {
-        String title = appointment.getTitle();
     }
 }

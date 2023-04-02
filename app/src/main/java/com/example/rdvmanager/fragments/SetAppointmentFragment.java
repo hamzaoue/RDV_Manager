@@ -91,7 +91,7 @@ public class SetAppointmentFragment extends Fragment
         if(isEmpty(R.id.title) || isEmpty(R.id.date) ||isEmpty(R.id.time)){return;}
         this.updateAppointment();
         AppointmentDataBase appointmentDataBase = new AppointmentDataBase(view.getContext());
-        appointmentDataBase.addAppointment(view.getContext(), this.aAppointment);
+        appointmentDataBase.addAppointment(this.aAppointment);
         appointmentDataBase.close();
         this.backToMyAppointment(view);
     }
@@ -132,7 +132,6 @@ public class SetAppointmentFragment extends Fragment
     /********************/
     private void setDialogs(View view)
     {
-        //Initialise les boîtes de dialogue
         this.setTimePicker(view, R.id.time_button);
         this.setDatePicker(view, R.id.date_button);
         this.aTitleEditText = this.setDialog(view, R.id.title_button, R.string.modify_title,
@@ -172,35 +171,24 @@ public class SetAppointmentFragment extends Fragment
     {
         //Configure l'action du bouton ok pour remplir le textView avec l'heure au bon format
         TextView timeView = view.findViewById(R.id.time);
-        TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) ->
-        {
+        TimePickerDialog.OnTimeSetListener listener = (view1, hours, minutes) -> {
             this.aAppointment.getCalendar().set(Calendar.HOUR_OF_DAY, hours);
             this.aAppointment.getCalendar().set(Calendar.MINUTE, minutes);
             timeView.setText(this.aAppointment.getTime());
         };
-
-        // Créer la boîte de dialogue
-        TimePickerDialog dialog = new TimePickerDialog(this.requireContext(),
-                R.style.MyDialogTheme, listener, 12 , 0, true);
-
-        //Bouton qui ouvre le timePicker
+        TimePickerDialog dialog = new TimePickerDialog(this.requireContext(),listener,12,0,true);
         view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
     }
     /********************/
     private void setDatePicker(View view, int button_id)
     {
-        // Créer la boîte de dialogue
-        DatePickerDialog dialog = new DatePickerDialog(this.requireContext(),R.style.MyDialogTheme);
-
         //Configure le bouton ok pour remplir le textView avec la date au bon format
+        DatePickerDialog dialog = new DatePickerDialog(this.requireContext());
         TextView dateView = view.findViewById(R.id.date);
-        dialog.setOnDateSetListener((view1, year, month, day) ->
-        {
+        dialog.setOnDateSetListener((view1, year, month, day) -> {
             this.aAppointment.getCalendar().set(year,month,day);
             dateView.setText(this.aAppointment.getDate());
         });
-
-        //Bouton qui ouvre le datePicker
         view.findViewById(button_id).setOnClickListener(view1 -> dialog.show());
     }
     /********************/

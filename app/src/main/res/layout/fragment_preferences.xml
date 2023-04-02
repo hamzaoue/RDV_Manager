@@ -9,8 +9,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout style="@style/BackgroundTheme"
-            android:paddingEnd="0dp"
+        <LinearLayout
+            style="@style/PreferenceBackgroundStyle"
+            android:paddingEnd = "0dp"
             tools:ignore="RtlSymmetry">
 
             <TextView
@@ -28,15 +29,12 @@
                 android:layout_height="48dp"
                 android:paddingVertical="@dimen/little_margin"
                 android:entries="@array/languages"
-                android:gravity="end"
                 android:paddingEnd="25dp"
-                android:spinnerMode="dropdown"
-                android:theme="@style/MyTheme"
                 tools:ignore="RtlSymmetry" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/BackgroundTheme">
+        <LinearLayout style="@style/PreferenceBackgroundStyle">
 
             <TextView
                 android:layout_width="0dp"
@@ -48,16 +46,13 @@
             <View style="@style/VerticalBarTheme" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/background_music"
+                android:id="@+id/music"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:checked="false"
-                android:theme="@style/MyTheme"
-                tools:ignore="DuplicateSpeakableTextCheck" />
+                android:layout_height="48dp" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/BackgroundTheme">
+        <LinearLayout style="@style/PreferenceBackgroundStyle">
 
             <TextView
                 android:layout_width="0dp"
@@ -71,15 +66,13 @@
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/dark_mode"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:checked="false"
-                android:theme="@style/MyTheme" />
+                android:layout_height="48dp"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/notification_button"
-            style="@style/BackgroundTheme">
+            style="@style/PreferenceBackgroundStyle"
+            android:id="@+id/notification_button">
 
             <TextView
                 android:layout_width="0dp"
@@ -88,14 +81,12 @@
                 android:textColor="@color/white"
                 android:layout_weight="1"/>
 
-            <View style="@style/VerticalBarTheme" />
+            <View style="@style/VerticalBarTheme"/>
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/notification"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:checked="false"
-                android:theme="@style/MyTheme" />
+                android:layout_height="48dp"/>
 
         </LinearLayout>
 

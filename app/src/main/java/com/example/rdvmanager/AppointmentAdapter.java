@@ -86,7 +86,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void showOptionDialog(View view, Appointment appointment)
     {
         String[] options = view.getContext().getResources().getStringArray(R.array.options);
-        AlertDialog.Builder builder=new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
+        AlertDialog.Builder builder=new AlertDialog.Builder(view.getContext());
         builder.setItems(options, (dialog,which) ->onOptionClicked(view,appointment,which));
         builder.setTitle(appointment.getTitle());
         builder.show();
@@ -134,7 +134,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     /********************/
     private void showRemoveConfirmationDialog(View view, Appointment appointment)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(),R.style.MyDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle(R.string.confirmation);
         builder.setMessage(R.string.confirmation_message);
         builder.setNegativeButton(android.R.string.no, null);

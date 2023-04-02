@@ -2,12 +2,10 @@ package com.example.rdvmanager;
 
 import android.content.Context;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /********************/
 public class Appointment
@@ -47,7 +45,7 @@ public class Appointment
     public String toString(Context context)
     {
         int[] fields = {R.string.title,R.string.date,R.string.time,R.string.address,R.string.contact,R.string.phone};
-        String[] values = {getTitle(), getDate(), getTime(), getAddress(),getContact(),getPhone()};
+        String[] values = {getTitle(),getDate(),getTime(),getAddress(),getContact(),getPhone()};
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < values.length; i++)
             if(values[i] != null && !values[i].isEmpty())

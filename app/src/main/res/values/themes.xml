@@ -1,108 +1,89 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.RDVManager" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--******************************************************-->
+    <!--                   Application theme                  -->
+    <!--******************************************************-->
+
+    <style name="MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- ActionBar/NavigationBar/StatusBar-->
+        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+
+        <!-- spinner -->
+        <item name="colorControlActivated">@color/yellow</item>
+        <item name="android:colorForeground">@color/white</item>
+
+        <!-- Buttons -->
+        <item name="android:buttonStyle">@style/ButtonStyle</item>
+
+        <!-- Dialogs -->
+        <item name="android:alertDialogTheme">@style/DialogStyle</item>
+        <item name="android:datePickerDialogTheme">@style/DialogStyle</item>
+        <item name="android:timePickerDialogTheme">@style/DialogStyle</item>
+    </style>
+
+    <!--******************************************************-->
+    <!--               Application theme elements             -->
+    <!--******************************************************-->
+
+    <!-- ActionBar/NavigationBar/StatusBar -->
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="background">@color/yellow</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
-    </style>
-    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
         <item name="titleTextStyle">@style/AppTheme.ActionBar.TitleText</item>
-        <item name="background">@color/yellow</item>
     </style>
+
+    <!-- ActionBar title -->
     <style name="AppTheme.ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/black</item>
     </style>
-    <!--******************************************************-->
-    <!--               Commun à plusieurs pages              -->
-    <!--******************************************************-->
 
-    <!-- -->
-    <style name="MyTheme">
+    <!--Buttons-->
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">@color/yellow</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <!--  All dialogs -->
+    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <!-- primary/secondary colors -->
+        <item name="android:colorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/yellow</item>
-        <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorPrimaryInverse">@color/black</item>
         <item name="android:textColorSecondaryInverse">@color/grey_blue</item>
         <item name="colorAccent">@color/yellow</item>
+
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>
+        <item name="android:windowBackground">@drawable/rounded_corners_black</item>
+        <item name="android:textColorAlertDialogListItem">@color/white</item>
+        <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
+        <!-- TimePicker-->
+        <item name="android:timePickerStyle">@style/TimePickerStyle</item>
     </style>
 
-    <!--Boutons-->
-    <style name="ButtonStyle">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:backgroundTint">@color/yellow</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginEnd">@dimen/little_margin</item>
-        <item name="android:layout_marginBottom">@dimen/little_margin</item>
+    <!--TimePicker mode -->
+    <style name="TimePickerStyle" parent="Theme.AppCompat.Light">
+        <item name="android:timePickerMode">spinner</item>
     </style>
 
-    <!--Layout clickable -->
-    <style name="ClickableLayoutTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/round_corners_ripple</item>
+    <!--  Dialog title-->
+    <style name="DialogTitleStyle" parent="android:TextAppearance.Material.DialogWindowTitle">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- Titre de la page -->
-    <style name="TitleStyle">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_marginTop">@dimen/default_margin</item>
-        <item name="android:layout_marginStart">@dimen/default_margin</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <!-- icone de fleche droite -->
-    <style name="ArrowTheme">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/ic_arrow_right</item>"
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:tint">@color/white</item>
+    <!--Boutons ok et cancel des boîtes de dialogue-->
+    <style name="DialogButtonStyle" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <!--******************************************************-->
-    <!--                      Préférences                     -->
+    <!--                    MyAppointments                    -->
     <!--******************************************************-->
 
-    <!-- -->
-    <style name="VerticalBarTheme">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_marginTop">@dimen/little_margin</item>
-        <item name="android:layout_marginBottom">@dimen/little_margin</item>
-        <item name="android:background">@color/white</item>
-    </style>
-
-    <!-- -->
-    <style name="BackgroundTheme" parent="@style/ClickableLayoutTheme">
-        <item name="android:orientation">horizontal</item>
-        <item name="android:gravity">end</item>
-        <item name="android:layout_margin">@dimen/little_margin</item>
-        <item name="android:paddingRight">@dimen/default_margin</item>
-        <item name="android:paddingLeft">@dimen/default_margin</item>
-        <item name="android:paddingTop">@dimen/little_margin</item>
-        <item name="android:paddingBottom">@dimen/little_margin</item>
-    </style>
-
-    <!--******************************************************-->
-    <!--                 Page mes rendez-vous                 -->
-    <!--******************************************************-->
-
-    <!-- Titre du rendez-vous -->
-    <style name="AppointmentTitle">
-        <item name="android:background">@drawable/rounded_corners_top_yellow</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:padding">3dp</item>
-    </style>
-
-    <!-- Infos du rendez-vous -->
+    <!-- Appointment content -->
     <style name="AppointmentContent">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -120,26 +101,32 @@
         <item name="android:layout_marginRight">@dimen/little_margin</item>
         <item name="android:tint">@color/white</item>
     </style>
+
     <!--******************************************************-->
-    <!--      Page de création/modification de rendez-vous    -->
+    <!--                    SetAppointment                    -->
     <!--******************************************************-->
 
-    <!-- Toute la section -->
-    <style name="SectionTheme" parent="@style/ClickableLayoutTheme">
+    <!-- Section style -->
+    <style name="SectionStyle">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
         <item name="android:padding">@dimen/default_margin</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/round_corners_ripple</item>
     </style>
 
-    <!-- Titre de section (Titre,Date,Heure,Adresse etc) -->
+    <!-- Section title style -->
     <style name="SectionTitleStyle">
         <item name="android:textColor">@color/yellow</item>
         <item name="android:textSize">14sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">@dimen/default_margin</item>
         <item name="android:drawableTint">@color/yellow</item>
+        <item name="android:drawablePadding">@dimen/little_margin</item>
     </style>
 
-    <!-- Texte remplit par l'utilisateur -->
+    <!-- Filled section style -->
     <style name="SectionFilledStyle">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">13sp</item>
@@ -151,7 +138,17 @@
         <item name="android:paddingRight">@dimen/little_margin</item>
     </style>
 
-    <!-- ligne qui sépare les séctions -->
+    <!-- Right arrow -->
+    <style name="ArrowStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_arrow_right</item>"
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <!-- Horizontal Bar -->
     <style name="HorizontalBarTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
@@ -161,44 +158,30 @@
     </style>
 
     <!--******************************************************-->
-    <!--                   Boîtes de dialogues                -->
+    <!--                      Preferences                     -->
     <!--******************************************************-->
 
-    <!--  Commun à toute les boîtes de dialogue -->
-    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:theme">@style/MyTheme</item>
-        <item name="android:windowBackground">@drawable/rounded_corners_black</item>
-        <item name="android:textColorAlertDialogListItem">@color/white</item>
-        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonTheme</item>
-        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonTheme</item>
-        <item name="android:timePickerStyle">@style/TimePickerTheme</item> <!-- Pour TimePicker -->
+    <!-- Vertical Bar -->
+    <style name="VerticalBarTheme">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/little_margin</item>
+        <item name="android:layout_marginBottom">@dimen/little_margin</item>
+        <item name="android:background">@color/white</item>
     </style>
 
-    <!-- Titre des alertDialog -->
-    <style name="AlertDialogTitleStyle" parent="@android:style/TextAppearance.DialogWindowTitle">
-        <item name="android:textAlignment">center</item>
-    </style>
-
-    <!--Mode par default du timePicker -->
-    <style name="TimePickerTheme" parent="Theme.AppCompat.Light">
-        <item name="android:timePickerMode">spinner</item>
-    </style>
-
-    <!--Boutons ok et cancel des boîtes de dialogue-->
-    <style name="DialogButtonTheme" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <!--TextView des CustomDialog -->
-    <style name="DialogTitleStyle">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <!--EditText des CustomDialog -->
-    <style name="DialogEditTextStyle">
-        <item name="android:textColor">@color/white</item>
+    <!-- PreferenceBackground -->
+    <style name="PreferenceBackgroundStyle">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:paddingEnd">@dimen/default_margin</item>
+        <item name="android:paddingStart">@dimen/default_margin</item>
+        <item name="android:paddingTop">@dimen/little_margin</item>
+        <item name="android:paddingBottom">@dimen/little_margin</item>
+        <item name="android:layout_margin">@dimen/little_margin</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/round_corners_ripple</item>
     </style>
 
 </resources>
