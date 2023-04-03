@@ -19,6 +19,7 @@ import com.example.rdvmanager.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
+import java.util.Objects;
 
 /********************/
 public class MyAppointmentsFragment extends Fragment
@@ -42,7 +43,9 @@ public class MyAppointmentsFragment extends Fragment
         super.onResume();
         BottomNavigationView appointmentsNavigationView;
         appointmentsNavigationView = requireView().findViewById(R.id.appointments_navigation_view);
-        appointmentsNavigationView.setSelectedItemId(R.id.Upcoming);
+        RecyclerView recyclerView = requireView().findViewById(R.id.vertical_recycler_view);
+        ((AppointmentAdapter) Objects.requireNonNull(recyclerView.getAdapter()))
+                .setSelectedList(appointmentsNavigationView.getSelectedItemId());
     }
     /********************/
     private AppointmentAdapter createAdapter(View view)

@@ -145,6 +145,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     /********************/
     private void removeAppointment(View view,Appointment appointment)
     {
+        //Supprime l'alarme
+        NotificationManager.cancelAlarm(view.getContext(),appointment);
         //Supprime de la liste
         this.notifyItemRemoved(this.getCurrentList().indexOf(appointment));
         this.getCurrentList().remove(appointment);

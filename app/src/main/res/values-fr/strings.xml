@@ -73,13 +73,20 @@
         <item>EN</item>
     </string-array>
     <string name="send_notification">Recevoir une notification avant chaque rendez-vous</string>
-    <string name="two_hours_before">2 heures avant</string>
-    <string name="one_day_before">1 jour avant</string>
-    <string name="one_week_before">1 semaine avant</string>
+    <string name="two_hours">2 heures</string>
+    <string name="one_day">1 jour</string>
+    <string name="one_week">1 semaine</string>
+    <string name="before">avant</string>
     <string-array name="notifications">
-        <item>@string/two_hours_before</item>
-        <item>@string/one_day_before</item>
-        <item>@string/one_week_before</item>
+        <item>@string/two_hours</item>
+        <item>@string/one_day</item>
+        <item>@string/one_week</item>
     </string-array>
+
+    <!--******************************************************-->
+    <!--                      Notifications                   -->
+    <!--******************************************************-->
+
+    <string name="rappel_appointment_in_time">Rappel: %1$s dans %2$s</string>
 
 </resources>

@@ -13,7 +13,6 @@ public class Appointment
     private long aId;//Identifant dans la base de donnée,si -1 = pas dans la base de donnée
     private String aTitle, aContact, aPhone, aAddress;
     private final Calendar aCalendar;
-    /********************/
     public Appointment(int id) {this.aId = id; this.aCalendar = Calendar.getInstance();}
     public Appointment(){this.aId = -1; this.aCalendar = Calendar.getInstance();}
     /********************/

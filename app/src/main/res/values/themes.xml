@@ -18,6 +18,9 @@
         <item name="android:alertDialogTheme">@style/DialogStyle</item>
         <item name="android:datePickerDialogTheme">@style/DialogStyle</item>
         <item name="android:timePickerDialogTheme">@style/DialogStyle</item>
+
+        <!-- RadioButtons -->
+        <item name="android:radioButtonStyle">@style/RadioButtonStyle</item>
     </style>
 
     <!--******************************************************-->
@@ -49,6 +52,7 @@
     <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <!-- primary/secondary colors -->
         <item name="android:colorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/yellow</item>
         <item name="android:textColorPrimaryInverse">@color/black</item>
         <item name="android:textColorSecondaryInverse">@color/grey_blue</item>
@@ -74,8 +78,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!--Boutons ok et cancel des boîtes de dialogue-->
+    <!--OK / CANCEL of dialogs-->
     <style name="DialogButtonStyle" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- RadioButtons-->
+    <style name="RadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
         <item name="android:textColor">@color/white</item>
     </style>
 

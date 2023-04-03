@@ -33,6 +33,7 @@ import com.example.rdvmanager.Appointment;
 import com.example.rdvmanager.AppointmentDataBase;
 import com.example.rdvmanager.CustomDialog;
 import com.example.rdvmanager.MainActivity;
+import com.example.rdvmanager.NotificationManager;
 import com.example.rdvmanager.R;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -91,8 +92,12 @@ public class SetAppointmentFragment extends Fragment
         if(isEmpty(R.id.title) || isEmpty(R.id.date) ||isEmpty(R.id.time)){return;}
         this.updateAppointment();
         AppointmentDataBase appointmentDataBase = new AppointmentDataBase(view.getContext());
-        appointmentDataBase.addAppointment(this.aAppointment);
+        if (this.aAppointment.getId() == -1)
+            appointmentDataBase.addAppointment(this.aAppointment);
+        else
+            appointmentDataBase.updateAppointment(this.aAppointment);
         appointmentDataBase.close();
+        NotificationManager.setAlarm(view.getContext() , this.aAppointment);
         this.backToMyAppointment(view);
     }
     /********************/

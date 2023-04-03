@@ -43,6 +43,7 @@ public class AppointmentDataBase extends SQLiteOpenHelper
                 + CONTACT + " TEXT,"
                 + PHONE + " TEXT)";
         db.execSQL(CREATE_TABLE);
+        db.close();
     }
     /********************/
     @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
@@ -51,30 +52,49 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         this.onCreate(db);
     }
     /********************/
-    public List<Appointment> getPastAppointments()
+    public void addAppointment(Appointment appointment)
     {
-        String condition = " WHERE datetime(" + CALENDAR + ") < datetime('now', '+2 hour')";
-        return this.getAppointments(condition);
+        SQLiteDatabase db = this.getWritableDatabase();
+        appointment.setId(db.insert(TABLE_NAME, null, this.getValues(appointment)));
+        db.close();
     }
+    /********************/
+    public void updateAppointment(Appointment appointment)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TABLE_NAME, getValues(appointment),ID+" = ?",new String[]{""+appointment.getId()});
+        db.close();
+    }
+    /********************/
+    public void deleteAppointment(long id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+    /********************/
+    public Appointment getAppointmentById(long id)
+    {return getAppointmentList(" WHERE " + ID + " = " + id).get(0);}
+    /********************/
+    public List<Appointment> getPastAppointments()
+    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") < datetime('now', '+2 hour')");}
     /********************/
     public List<Appointment> getUpcomingAppointments()
-    {
-        String condition = " WHERE datetime(" + CALENDAR + ") >= datetime('now', '+2 hour')";
-        return this.getAppointments(condition);
-    }
+    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") >= datetime('now', '+2 hour')");}
     /********************/
-    public List<Appointment> getAppointments(String condition)
+    public List<Appointment> getAppointmentList(String condition)
     {
         List<Appointment> appointmentsList = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NAME + condition + " ORDER BY " + CALENDAR + " ASC";
-        Cursor cursor = this.getWritableDatabase().rawQuery(query, null);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
             do {appointmentsList.add(this.getAppointment(cursor));}
             while (cursor.moveToNext());}
         return appointmentsList;
     }
     /**************/
-    public Appointment getAppointment(Cursor cursor)
+    private Appointment getAppointment(Cursor cursor)
     {
         Appointment appointment = new Appointment(cursor.getInt(0));
         appointment.setTitle(cursor.getString(1));
@@ -87,7 +107,7 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         return appointment;
     }
     /********************/
-    public void addAppointment(Appointment appointment)
+    private ContentValues getValues(Appointment appointment)
     {
         ContentValues values = new ContentValues();
         values.put(TITLE, appointment.getTitle());
@@ -95,18 +115,6 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         values.put(ADDRESS, appointment.getAddress());
         values.put(CONTACT, appointment.getContact());
         values.put(PHONE, appointment.getPhone());
-
-        //Ajoute ou modifie si deja présent
-        SQLiteDatabase db = this.getWritableDatabase();
-        if (appointment.getId() == -1)
-            appointment.setId(db.insert(TABLE_NAME, null, values));
-        else
-            db.update(TABLE_NAME, values, ID + " = ?", new String[]{"" + appointment.getId()});
-    }
-    /********************/
-    public void deleteAppointment(long id)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
+        return values;
     }
 }

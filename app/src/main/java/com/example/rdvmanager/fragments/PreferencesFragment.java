@@ -17,6 +17,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.rdvmanager.MainActivity;
+import com.example.rdvmanager.NotificationManager;
 import com.example.rdvmanager.R;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,14 +40,14 @@ public class PreferencesFragment extends Fragment
         return view;
     }
     /********************/
-    private void setupSwitch(View view, int SwitchId, String prefsKey, boolean recreateAfterChange)
+    private void setupSwitch(View view, int SwitchId, String prefsKey, boolean recreate)
     {
         SwitchCompat switchCompat = view.findViewById(SwitchId);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         switchCompat.setChecked(prefs.getBoolean(prefsKey, false));
         switchCompat.setOnCheckedChangeListener((b, isChecked) -> {
             prefs.edit().putBoolean(prefsKey, isChecked).apply();
-            if(recreateAfterChange) this.requireActivity().recreate();});
+            if(recreate) this.requireActivity().recreate();});
     }
     /********************/
     private void setupLanguageSpinner(View view)
@@ -68,31 +69,31 @@ public class PreferencesFragment extends Fragment
     /********************/
     private void setupNotificationButton(View view)
     {
-        //Dialogue contenant un radioGroup
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         RadioGroup radioGroup = this.createNotificationRadioGroup(view.getContext());
         builder.setView(radioGroup);
         builder.setTitle(R.string.send_notification);
         builder.setNegativeButton(R.string.cancel, null);
-        builder.setPositiveButton(R.string.save, (dialog, which) ->
-            prefs.edit().putInt("NotificationIndex",radioGroup.getCheckedRadioButtonId()).apply());
+        builder.setPositiveButton(R.string.save, (dialog, which) -> {
+            NotificationManager.updateAllAlarms(view.getContext());
+            prefs.edit().putInt("NotificationIndex",radioGroup.getCheckedRadioButtonId()).apply();});
         AlertDialog dialog = builder.create();
-
-        //Bouton qui ouvre le dialogue
-        view.findViewById(R.id.notification_button).setOnClickListener(v -> { dialog.show();
-            radioGroup.check(prefs.getInt("NotificationIndex",0)); });
+        view.findViewById(R.id.notification_button).setOnClickListener(v -> {
+            radioGroup.check(prefs.getInt("NotificationIndex",0));dialog.show();});
     }
     /********************/
     private RadioGroup createNotificationRadioGroup(Context context)
     {
-        int[] optionsId = {R.string.two_hours_before,R.string.one_day_before,R.string.one_week_before};
+        int[] optionsId = { R.string.two_hours, R.string.one_day, R.string.one_week };
         RadioGroup radioGroup = new RadioGroup(context);
         int margin = (int) context.getResources().getDimension(R.dimen.default_margin);
         radioGroup.setPadding(margin, margin, margin, margin);
-        for(int optionId: optionsId) {
+        for (int i = 0; i < optionsId.length; i++) {
             RadioButton radioButton = new RadioButton(context);
-            radioButton.setText(context.getString(optionId));
+            String option = getString(optionsId[i]) + " " + getString(R.string.before);
+            radioButton.setText(option);
+            radioButton.setId(i);
             radioGroup.addView(radioButton);
         }
         return radioGroup;
