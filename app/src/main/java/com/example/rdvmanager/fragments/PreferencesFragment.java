@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
@@ -34,7 +35,7 @@ public class PreferencesFragment extends Fragment
         ((MainActivity)requireActivity()).setActionBarTitle(R.string.preferences);
         this.setupSwitch(view,R.id.notification,"Notifications",false);
         this.setupSwitch(view,R.id.dark_mode,"DarkMode",true);
-        this.setupSwitch(view,R.id.music,"Music",false);
+        this.setupSwitch(view,R.id.music,"Music",true);
         this.setupLanguageSpinner(view);
         this.setupNotificationButton(view);
         return view;

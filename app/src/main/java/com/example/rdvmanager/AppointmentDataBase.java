@@ -91,7 +91,10 @@ public class AppointmentDataBase extends SQLiteOpenHelper
         if (cursor.moveToFirst()){
             do {appointmentsList.add(this.getAppointment(cursor));}
             while (cursor.moveToNext());}
+        cursor.close();
+        db.close();
         return appointmentsList;
+
     }
     /**************/
     private Appointment getAppointment(Cursor cursor)
