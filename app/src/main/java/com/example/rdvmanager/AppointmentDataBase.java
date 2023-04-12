@@ -77,10 +77,10 @@ public class AppointmentDataBase extends SQLiteOpenHelper
     {return getAppointmentList(" WHERE " + ID + " = " + id).get(0);}
     /********************/
     public List<Appointment> getPastAppointments()
-    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") < datetime('now', '+2 hour')");}
+    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") < datetime('now','localtime')");}
     /********************/
     public List<Appointment> getUpcomingAppointments()
-    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") >= datetime('now', '+2 hour')");}
+    {return getAppointmentList(" WHERE datetime(" + CALENDAR + ") >= datetime('now','localtime')");}
     /********************/
     public List<Appointment> getAppointmentList(String condition)
     {
